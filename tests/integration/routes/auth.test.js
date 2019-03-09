@@ -3,7 +3,7 @@
 const request = require('supertest')
 const app = require('../../../app')
 
-describe('auth', () => {
+describe('auth routes', () => {
   describe('POST /login', () => {
     it('should be able to login', done => {
       request(app)

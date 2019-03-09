@@ -3,7 +3,7 @@
 const request = require('supertest')
 const app = require('../../../app')
 
-describe('users', () => {
+describe('users routes', () => {
   describe('GET /users', () => {
     it('should be able to get list of users', done => {
       request(app)
@@ -19,7 +19,7 @@ describe('users', () => {
     })
   })
   describe('PATCH /users/:id', () => {
-    test('should be able to patch user info', done => {
+    it('should be able to patch user info', done => {
       request(app)
         .patch('/users/userId')
         .expect(204, done)

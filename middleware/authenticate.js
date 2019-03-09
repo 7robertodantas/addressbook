@@ -1,7 +1,7 @@
 'use strict'
 
 const debug = require('debug')('app:middleware')
-const auth = require('../db/auth')
+const auth = require('../models/auth')
 
 const authenticate = (req, res, next) => {
   debug('Validating request token')
@@ -10,7 +10,9 @@ const authenticate = (req, res, next) => {
   if (!token) {
     const error = { message: 'Authorization header is required.' }
     return res.status(401).send(error)
-  } else if (!token.startsWith('Bearer ')) {
+  }
+
+  if (!token.startsWith('Bearer ')) {
     const error = { message: 'Authorization header scheme is missing or the given scheme \
      is not supported. Only Bearer scheme is supported.' }
     return res.status(401).send(error)

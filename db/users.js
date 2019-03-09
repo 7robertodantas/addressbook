@@ -10,12 +10,16 @@ const find = id => {
   debug(`fetching userId ${id} in database`)
 }
 
+const findByEmail = email => {
+  debug(`fetching email ${email} in database`)
+}
+
 const update = id => {
   debug(`updating userId ${id} in database`)
 }
 
 const patch = id => {
-  debug(`patching userId ${id} in database`)  
+  debug(`patching userId ${id} in database`)
 }
 
 const del = id => {
@@ -25,6 +29,7 @@ const del = id => {
 module.exports = {
   save,
   find,
+  findByEmail,
   update,
   patch,
   delete: del,
