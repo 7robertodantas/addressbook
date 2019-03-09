@@ -28,4 +28,8 @@ router.delete('/users/:id', (req, res) => {
   res.status(200).send()
 })
 
+router.post('/users/:id/contacts', (req, res) => {
+  res.status(201).send()
+})
+
 module.exports = router

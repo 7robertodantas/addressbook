@@ -4,8 +4,8 @@ const express = require('express')
 
 const router = new express.Router()
 
-router.post('/contacts', (req, res) => {
-  res.status(201).send()
+router.post('/login', (req, res) => {
+  res.status(200).send()
 })
 
 module.exports = router
