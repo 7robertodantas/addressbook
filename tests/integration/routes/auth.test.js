@@ -11,4 +11,11 @@ describe('auth', () => {
         .expect(200, done)
     })
   })
+  describe('POST /register', () => {
+    it('should be able to register', done => {
+      request(app)
+        .post('/register')
+        .expect(201, done)
+    })
+  })
 })

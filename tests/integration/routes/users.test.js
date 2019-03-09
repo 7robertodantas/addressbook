@@ -4,13 +4,6 @@ const request = require('supertest')
 const app = require('../../../app')
 
 describe('users', () => {
-  describe('POST /', () => {
-    it('should be able to create user without authentication', done => {
-      request(app)
-        .post('/users')
-        .expect(201, done)
-    })
-  })
   describe('GET /users', () => {
     it('should be able to get list of users', done => {
       request(app)

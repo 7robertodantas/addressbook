@@ -1,6 +1,6 @@
 'use strict'
 
-const debug = require('debug')('app')
+const debug = require('debug')('app:index')
 const config = require('config')
 const app = require('./app')
 
