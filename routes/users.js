@@ -1,6 +1,7 @@
 'use strict'
 
 const express = require('express')
+const config = require('config')
 const resourceOwner = require('../middleware/resourceOwnerHandler')
 const users = require('../models/users')
 const contacts = require('../models/contacts')
@@ -38,8 +39,15 @@ router.delete('/:userId', wrap(async (req, res) => {
 }))
 
 router.post('/:userId/contacts', wrap(async (req, res) => {
-  const contact = await contacts.saveContact(req.params.userId, res.body)
-  res.status(201).send(contact)
+  const userId = req.params.userId
+  const contact = req.body
+  const created = await contacts.saveContact(userId, contact)
+  const location = `${config.get('firebase.databaseURL')}\
+  /users/${userId}/contacts/${created.id}.json`
+  res
+    .set('Location', location)
+    .status(201)
+    .send(created)
 }))
 
 module.exports = router

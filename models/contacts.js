@@ -3,6 +3,7 @@
 const R = require('ramda')
 const Boom = require('boom')
 const Joi = require('joi')
+const debug = require('debug')('app:models')
 const contacts = require('../db/contacts')
 const users = require('../db/users')
 
@@ -50,6 +51,8 @@ const saveContact = async (userId, contact) => {
   }
 
   const validatedContact = parseSchema(contact)
+  debug(`current contact ${contact}`)
+
   return contacts.save(userId, validatedContact)
 }
 

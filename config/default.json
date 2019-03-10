@@ -25,5 +25,13 @@
       "useNewUrlParser": true,
       "poolSize": 10
     }
+  },
+  "firebase": {
+    "apiKey": "AIzaSyBe1oQS_dhMIRhIWVQa3StEAt6qCmvtGgI",
+    "authDomain": "strv-addressbook-dantas-robert.firebaseapp.com",
+    "databaseURL": "https://strv-addressbook-dantas-robert.firebaseio.com",
+    "projectId": "strv-addressbook-dantas-robert",
+    "storageBucket": "strv-addressbook-dantas-robert.appspot.com",
+    "messagingSenderId": "581423116590"
   }
 }

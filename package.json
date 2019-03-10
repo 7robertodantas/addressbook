@@ -21,13 +21,16 @@
   },
   "homepage": "https://github.com/7robertodantas/addressbook#readme",
   "jest": {
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ]
   },
   "dependencies": {
     "bcrypt": "^3.0.4",
     "boom": "^7.3.0",
     "config": "^3.0.1",
     "express": "^4.16.4",
+    "firebase": "^5.8.6",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.0",
     "mongodb": "^3.1.13",
