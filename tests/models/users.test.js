@@ -73,9 +73,9 @@ describe('users models', () => {
         .rejects
         .toThrow(/Invalid/u)
     })
-    it('should throw if name is falsy', () => {
+    it('should throw if name is falsy', async () => {
       const names = ['', null, NaN, 0, false]
-      names.forEach(async invalidName => {
+      await Promise.all(names.map(async invalidName => {
         const user = {
           name: invalidName,
           email: 'user@email.com',
@@ -84,11 +84,11 @@ describe('users models', () => {
         await expect(users.saveUser(user))
           .rejects
           .toThrow(/Invalid/u)
-      })
+      }))
     })
-    it('should throw if email is falsy', () => {
+    it('should throw if email is falsy', async () => {
       const emails = ['', null, NaN, 0, false]
-      emails.forEach(async invalidEmail => {
+      await Promise.all(emails.map(async invalidEmail => {
         const user = {
           name: 'User Name',
           email: invalidEmail,
@@ -97,11 +97,11 @@ describe('users models', () => {
         await expect(users.saveUser(user))
           .rejects
           .toThrow(/Invalid/u)
-      })
+      }))
     })
-    it('should throw if password is falsy', () => {
+    it('should throw if password is falsy', async () => {
       const passwords = ['', null, NaN, 0, false]
-      passwords.forEach(async invalidPassword => {
+      await Promise.all(passwords.map(async invalidPassword => {
         const user = {
           name: 'User Name',
           email: 'user@email.com',
@@ -110,7 +110,7 @@ describe('users models', () => {
         await expect(users.saveUser(user))
           .rejects
           .toThrow(/Invalid/u)
-      })
+      }))
     })
   })
   describe('replaceUser', () => {
@@ -184,10 +184,10 @@ describe('users models', () => {
         .rejects
         .toThrow(/Invalid/u)
     })
-    it('should throw if name is falsy', () => {
+    it('should throw if name is falsy', async () => {
       const names = ['', null, NaN, 0, false]
       usersDb.exists.mockImplementation(() => true)
-      names.forEach(async invalidName => {
+      await Promise.all(names.map(async invalidName => {
         const user = {
           name: invalidName,
           email: 'user@email.com',
@@ -196,12 +196,12 @@ describe('users models', () => {
         await expect(users.replaceUser('userId', user))
           .rejects
           .toThrow(/Invalid/u)
-      })
+      }))
     })
-    it('should throw if email is falsy', () => {
+    it('should throw if email is falsy', async () => {
       const emails = ['', null, NaN, 0, false]
       usersDb.exists.mockImplementation(() => true)
-      emails.forEach(async invalidEmail => {
+      await Promise.all(emails.map(async invalidEmail => {
         const user = {
           name: 'User Name',
           email: invalidEmail,
@@ -210,12 +210,12 @@ describe('users models', () => {
         await expect(users.replaceUser('userId', user))
           .rejects
           .toThrow(/Invalid/u)
-      })
+      }))
     })
-    it('should throw if password is falsy', () => {
+    it('should throw if password is falsy', async () => {
       const passwords = ['', null, NaN, 0, false]
       usersDb.exists.mockImplementation(() => true)
-      passwords.forEach(async invalidPassword => {
+      await Promise.all(passwords.map(async invalidPassword => {
         const user = {
           name: 'User Name',
           email: 'user@email.com',
@@ -224,7 +224,7 @@ describe('users models', () => {
         await expect(users.replaceUser('userId', user))
           .rejects
           .toThrow(/Invalid/u)
-      })
+      }))
     })
   })
   describe('patchUser', () => {
