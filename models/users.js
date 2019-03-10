@@ -17,8 +17,7 @@ const userSchema = Joi.object().keys({
     .required(),
   email: Joi.string().email()
     .required(),
-  password: Joi.string().alphanum().min(3)
-    .required(),
+  password: Joi.string().alphanum().min(3),
 }).options({ stripUnknown: true })
 
 /**
@@ -33,6 +32,32 @@ const userSchema = Joi.object().keys({
 const sanitazeUser = user => R.pick(['id', 'name', 'email'], user)
 
 /**
+ * This function hashes a given string and returns it.
+ * @param {String} password the plain text string to be hashed.
+ * @returns {Promise} bcrypt hash string.
+ */
+const hashPassword = password => bcrypt.hash(password, bcryptConfig.get('saltRounds'))
+
+/**
+ * This function parses the user object in the schema
+ * and validates it.
+ * @param {Object} user - the user instance.
+ * @param {string} user.name - user's name.
+ * @param {string} user.email - user's email.
+ * @param {string} user.password - user's password.
+ * @throws {Error} if the user object does not match schema.
+ * @returns {Object} user instance.
+ */
+const parseSchema = user => {
+  const { error, value } = Joi.validate(user, userSchema)
+  if (error) {
+    const details = R.pluck('message', error.details)
+    throw Boom.badRequest(`Invalid request. ${R.join(',', details)}`)
+  }
+  return value
+}
+
+/**
  * This function saves an user in database.
  * @param {Object} user - the user to be saved.
  * @param {string} user.name - user's name.
@@ -42,14 +67,13 @@ const sanitazeUser = user => R.pick(['id', 'name', 'email'], user)
  * @returns {Promise} saved user with the generated id and without password attribute.
  */
 const saveUser = async user => {
-  const { error, value } = Joi.validate(user, userSchema)
-
-  if (error) {
-    throw Boom.badRequest('Invalid request, error.', R.pluck('message', error.details))
+  if (!user.password) {
+    throw Boom.badRequest('Invalid request. "password" is required.')
   }
 
-  const sanitazedUser = sanitazeUser(value)
-  const hash = await bcrypt.hash(value.password, bcryptConfig.get('saltRounds'))
+  const validatedUser = parseSchema(user)
+  const hash = await hashPassword(validatedUser.password)
+  const sanitazedUser = sanitazeUser(validatedUser)
   const toSave = R.merge({ hashPassword: hash }, sanitazedUser)
   const savedUser = await users.save(toSave)
   return sanitazeUser(savedUser)
@@ -110,20 +134,55 @@ const replaceUser = async (id, user) => {
     throw Boom.notFound('User was not found', { id })
   }
 
-  const { error, value } = Joi.validate(user, userSchema)
-  if (error) {
-    throw Boom.badRequest('Invalid request, error.', R.pluck('message', error.details))
+  if (!user.password) {
+    throw Boom.badRequest('Invalid request. "password" is required.')
   }
 
-  const sanitazedUser = sanitazeUser(value)
-  const hash = await bcrypt.hash(value.password, bcryptConfig.get('saltRounds'))
+  const validatedUser = parseSchema(user)
+  const hash = await hashPassword(validatedUser.password)
+  const sanitazedUser = sanitazeUser(validatedUser)
   const toReplace = R.merge({ hashPassword: hash }, sanitazedUser)
   const savedUser = await users.update(id, toReplace)
   return sanitazeUser(savedUser)
 }
 
-const patchUser = (id, patch) => {
-  return users.patch(id, patch)
+/**
+ * Auxiliary method to just validate the schema.
+ * The caller is not interested in getting the
+ * returned user.
+ * @param {Object} user - the user instance to be validated.
+ * @returns {void}
+ */
+const validateSchema = user => {
+  parseSchema(user)
+}
+
+/**
+ * This function saves an user in database.
+ * @param {string} id - the user's id that will have its data replaced.
+ * @param {Object} patch - the partial user object to be patched.
+ * @param {Object} patch.name - optional value that will change user name.
+ * @param {Object} patch.email - optional value that will change user email.
+ * @param {Object} patch.password - optional value that will change user password.
+ * @throws {Error} - Bad Request if the user object doesn't match the schema.
+ * @returns {Promise} saved user with the generated id and without password attribute.
+ */
+const patchUser = async (id, patch) => {
+  const user = users.find(id)
+  if (!user) {
+    throw Boom.notFound('User was not found', { id })
+  }
+
+  let sanitzedPatch = R.omit(['id'], sanitazeUser(patch))
+  if (patch.password) {
+    const hash = await hashPassword(patch.password)
+    sanitzedPatch = R.merge({ hashPassword: hash }, sanitzedPatch)
+  }
+
+  const patchedUser = R.mergeDeepLeft(sanitzedPatch, user)
+  validateSchema(patchedUser)
+  const savedUser = await users.update(id, patchedUser)
+  return sanitazeUser(savedUser)
 }
 
 /**
@@ -149,4 +208,5 @@ module.exports = {
   replaceUser,
   patchUser,
   deleteUser,
+  hashPassword,
 }

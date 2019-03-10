@@ -1,16 +1,22 @@
 'use strict'
 
 const R = require('ramda')
-const config = require('config')
-const bcrypt = require('bcrypt')
 const usersDb = require('../../db/users')
 const users = require('../../models/users')
-
-const bcryptConfig = config.get('bcrypt')
 
 jest.mock('../../db/users')
 
 describe('users models', () => {
+
+  beforeEach(() => {
+    usersDb.exists.mockClear()
+    usersDb.update.mockClear()
+    usersDb.save.mockClear()
+    usersDb.findByEmail.mockClear()
+    usersDb.find.mockClear()
+    usersDb.delete.mockClear()
+  })
+
   describe('saveUser', () => {
     it('should save with hashPassword and return sanitazed user', async () => {
       const user = {
@@ -221,10 +227,87 @@ describe('users models', () => {
       })
     })
   })
+  describe('patchUser', () => {
+    it('it should be able to patch user name', async () => {
+      const hash = await users.hashPassword('password')
+      const existingUser = {
+        id: 'userId',
+        name: 'User Name',
+        email: 'user@email.com',
+        hashPassword: hash,
+      }
+      usersDb.exists.mockImplementation(() => true)
+      usersDb.find.mockImplementation(() => existingUser)
+      const patch = {
+        name: '2 User Name Updated',
+      }
+      const returnedUser = await users.patchUser('userId', patch)
+      expect(usersDb.update).toHaveBeenCalled()
+      expect(usersDb.update.mock.calls[0][1]).toMatchObject({
+        id: 'userId',
+        name: '2 User Name Updated',
+        email: 'user@email.com',
+        hashPassword: hash,
+      })
+      expect(returnedUser).toMatchObject({
+        id: 'userId',
+        name: '2 User Name Updated',
+        email: 'user@email.com',
+      })
+    })
+    it('it should be able to patch user email', async () => {
+      const hash = await users.hashPassword('password')
+      const existingUser = {
+        id: 'userId',
+        name: 'User Name',
+        email: 'user@email.com',
+        hashPassword: hash,
+      }
+      usersDb.exists.mockImplementation(() => true)
+      usersDb.find.mockImplementation(() => existingUser)
+      const patch = {
+        email: 'second2update@email.com',
+      }
+      const returnedUser = await users.patchUser('userId', patch)
+      expect(usersDb.update).toHaveBeenCalled()
+      expect(usersDb.update.mock.calls[0][1]).toMatchObject({
+        id: 'userId',
+        name: 'User Name',
+        email: 'second2update@email.com',
+        hashPassword: hash,
+      })
+      expect(returnedUser).toMatchObject({
+        id: 'userId',
+        name: 'User Name',
+        email: 'second2update@email.com',
+      })
+    })
+    it('it should be able to patch user password', async () => {
+      const hash = await users.hashPassword('password')
+      const existingUser = {
+        id: 'userId',
+        name: 'User Name',
+        email: 'user@email.com',
+        hashPassword: hash,
+      }
+      usersDb.exists.mockImplementation(() => true)
+      usersDb.find.mockImplementation(() => existingUser)
+      const patch = {
+        password: 'newpassword',
+      }
+      const returnedUser = await users.patchUser('userId', patch)
+      expect(usersDb.update).toHaveBeenCalled()
+      expect(usersDb.update.mock.calls[0][1].hashPassword).not.toEqual(hash)
+      expect(returnedUser).toMatchObject({
+        id: 'userId',
+        name: 'User Name',
+        email: 'user@email.com',
+      })
+    })
+  })
   describe('findUser', () => {
     it('should sanitaze returned user', async () => {
-      const hash = await bcrypt.hash('password', bcryptConfig.get('saltRounds'))
-
+      const hash = await users.hashPassword('password')
       usersDb.find.mockImplementation(id => ({
         id,
         name: 'User Name',
@@ -249,7 +332,7 @@ describe('users models', () => {
   })
   describe('deleteUser', () => {
     it('should sanitaze returned deleted user', async () => {
-      const hash = await bcrypt.hash('password', bcryptConfig.get('saltRounds'))
+      const hash = await users.hashPassword('password')
 
       usersDb.delete.mockImplementation(id => ({
         id,
@@ -275,7 +358,7 @@ describe('users models', () => {
   })
   describe('findUserByEmailAndPassword', () => {
     it('should sanitaze returned user', async () => {
-      const hash = await bcrypt.hash('password', bcryptConfig.get('saltRounds'))
+      const hash = await users.hashPassword('password')
 
       usersDb.findByEmail.mockImplementation(email => ({
         id: 'userId',
@@ -299,7 +382,7 @@ describe('users models', () => {
         .toThrow(/not found/u)
     })
     it('should throw if the password is wrong', async () => {
-      const hash = await bcrypt.hash('password', bcryptConfig.get('saltRounds'))
+      const hash = await users.hashPassword('password')
       usersDb.findByEmail.mockImplementation(email => ({
         id: 'userId',
         name: 'User Name',
