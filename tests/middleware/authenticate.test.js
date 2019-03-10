@@ -1,9 +1,10 @@
 'use strict'
 
+const Boom = require('boom')
 const authenticate = require('../../middleware/authenticate')
+const auth = require('../../models/auth')
 
 jest.mock('../../models/auth')
-const auth = require('../../models/auth')
 
 describe('authenticate middleware', () => {
   it('should require authorization header', () => {
@@ -16,9 +17,8 @@ describe('authenticate middleware', () => {
       status: statusMock,
     }
     const next = jest.fn()
-    authenticate(req, res, next)
-    expect(statusMock).toHaveBeenCalledWith(401)
-    expect(sendMock).toHaveBeenCalled()
+    
+    expect(() => authenticate(req, res, next)).toThrow(/required/u)
     expect(next).not.toHaveBeenCalled()
   })
   it('should require bearer authorization scheme', () => {
@@ -33,9 +33,7 @@ describe('authenticate middleware', () => {
       status: statusMock,
     }
     const next = jest.fn()
-    authenticate(req, res, next)
-    expect(statusMock).toHaveBeenCalledWith(401)
-    expect(sendMock).toHaveBeenCalled()
+    expect(() => authenticate(req, res, next)).toThrow(/not supported/u)
     expect(next).not.toHaveBeenCalled()
   })
   it('should give error if auth verify returns empty', () => {
@@ -50,10 +48,10 @@ describe('authenticate middleware', () => {
       status: statusMock,
     }
     const next = jest.fn()
-    auth.verify.mockImplementation(() => null)
-    authenticate(req, res, next)
-    expect(statusMock).toHaveBeenCalledWith(401)
-    expect(sendMock).toHaveBeenCalled()
+    auth.verify.mockImplementation(() => { 
+      throw Boom.unauthorized('invalid token') 
+    })
+    expect(() => authenticate(req, res, next)).toThrow(/invalid token/u)
     expect(next).not.toHaveBeenCalled()
   })
   it('should add authenticated user in request if token is valid', () => {
@@ -67,12 +65,12 @@ describe('authenticate middleware', () => {
     const res = {
       status: statusMock,
     }
-    const next = jest.fn()
     const user = {
-      _id: 'userId',
+      id: 'userId',
       name: 'User Name',
       email: 'email@user.com',
     }
+    const next = jest.fn()
     auth.verify.mockImplementation(() => user)
     authenticate(req, res, next)
     expect(statusMock).not.toHaveBeenCalledWith()

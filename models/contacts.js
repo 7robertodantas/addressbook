@@ -6,7 +6,7 @@ const contacts = require('../db/contacts')
 const contactSchema = Joi.object().keys({
   name: Joi.string().trim().min(3),
   email: Joi.string().email(),
-})
+}).options({ stripUnknown: true })
 
 const saveContact = contact => {
   const { error, value } = Joi.validate(contact, contactSchema)

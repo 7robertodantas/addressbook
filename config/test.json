@@ -1,3 +1,21 @@
 {
-  "port": 0
+  "port": 0,
+  "jwt": {
+    "secretOrPrivateKey": "test",
+    "options": {
+      "verify": {
+        "algorithms": ["HS256"],
+        "issuer": "addressbook-test-api",
+        "maxAge": "1h"
+      },
+      "sign": {
+        "algorithm": "HS256",
+        "issuer": "addressbook-test-api",
+        "expiresIn": "1h"
+      }
+    }
+  },
+  "bcrypt": {
+    "saltRounds": 10
+  }
 }
