@@ -21,7 +21,6 @@ const errorHandler = (err, req, res, next) => {
   if (Boom.isBoom(err)) {
     return res.status(err.output.statusCode || 500).send(err.output.payload)
   }
-
   const error = Boom.boomify(err, {
     message: 'Something went wrong',
   })

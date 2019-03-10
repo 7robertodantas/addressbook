@@ -45,14 +45,19 @@ const hashPassword = password => bcrypt.hash(password, bcryptConfig.get('saltRou
  * @param {string} user.name - user's name.
  * @param {string} user.email - user's email.
  * @param {string} user.password - user's password.
+ * @param {Array} additionalRequired - additional attributes to validate as required
  * @throws {Error} if the user object does not match schema.
  * @returns {Object} user instance.
  */
-const parseSchema = user => {
+const parseSchema = (user, additionalRequired = []) => {
   const { error, value } = Joi.validate(user, userSchema)
   if (error) {
     const details = R.pluck('message', error.details)
     throw Boom.badRequest(`Invalid request. ${R.join(',', details)}`)
+  }
+  const missingRequireds = R.map(key => `"${key}"`, R.difference(additionalRequired, R.keys(value)))
+  if (!R.isEmpty(missingRequireds)) {
+    throw Boom.badRequest(`Invalid request. ${R.join(',', missingRequireds)} is required.`)
   }
   return value
 }
@@ -67,11 +72,7 @@ const parseSchema = user => {
  * @returns {Promise} saved user with the generated id and without password attribute.
  */
 const saveUser = async user => {
-  if (!user.password) {
-    throw Boom.badRequest('Invalid request. "password" is required.')
-  }
-
-  const validatedUser = parseSchema(user)
+  const validatedUser = parseSchema(user, ['password'])
   const hash = await hashPassword(validatedUser.password)
   const sanitazedUser = sanitazeUser(validatedUser)
   const toSave = R.merge({ hashPassword: hash }, sanitazedUser)
@@ -134,11 +135,7 @@ const replaceUser = async (id, user) => {
     throw Boom.notFound('User was not found', { id })
   }
 
-  if (!user.password) {
-    throw Boom.badRequest('Invalid request. "password" is required.')
-  }
-
-  const validatedUser = parseSchema(user)
+  const validatedUser = parseSchema(user, ['password'])
   const hash = await hashPassword(validatedUser.password)
   const sanitazedUser = sanitazeUser(validatedUser)
   const toReplace = R.merge({ hashPassword: hash }, sanitazedUser)
