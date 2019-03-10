@@ -1,6 +1,6 @@
 'use strict'
 
-const resourceOwner = require('../../middleware/resourceOwner')
+const resourceOwner = require('../../middleware/resourceOwnerHandler')
 
 describe('resourceOwner middleware', () => {
   it('should require authenticated user', () => {

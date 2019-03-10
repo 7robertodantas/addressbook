@@ -1,7 +1,7 @@
 'use strict'
 
 const Boom = require('boom')
-const authenticate = require('../../middleware/authenticate')
+const authenticate = require('../../middleware/authenticateHandler')
 const auth = require('../../models/auth')
 
 jest.mock('../../models/auth')

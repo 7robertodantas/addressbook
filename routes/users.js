@@ -1,7 +1,7 @@
 'use strict'
 
 const express = require('express')
-const resourceOwner = require('../middleware/resourceOwner')
+const resourceOwner = require('../middleware/resourceOwnerHandler')
 
 const router = new express.Router()
 
