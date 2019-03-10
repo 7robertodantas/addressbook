@@ -8,11 +8,11 @@ const { wrap } = require('./utils')
 
 const router = new express.Router()
 
-router.use(resourceOwner)
+router.param('userId', resourceOwner)
 
 router.post('/', wrap(async (req, res) => {
   const user = await users.saveUser(req.body)
-  res.set('Location', `${req.baseUrl}/users/${user.id}'`)
+  res.set('Location', `${req.baseUrl}/users/${user.id}`)
     .status(201)
     .send(user)
 }))

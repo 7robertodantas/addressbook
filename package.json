@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jest --verbose"
+    "test": "jest --verbose --detectOpenHandles"
   },
   "engines": {
     "node": ">=8.3.0"
@@ -20,6 +20,9 @@
     "url": "https://github.com/7robertodantas/addressbook/issues"
   },
   "homepage": "https://github.com/7robertodantas/addressbook#readme",
+  "jest": {
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
+  },
   "dependencies": {
     "bcrypt": "^3.0.4",
     "boom": "^7.3.0",
@@ -27,6 +30,7 @@
     "express": "^4.16.4",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.0",
+    "mongodb": "^3.1.13",
     "ramda": "^0.26.1"
   },
   "devDependencies": {

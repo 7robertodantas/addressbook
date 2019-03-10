@@ -1,40 +1,72 @@
 'use strict'
 
+const R = require('ramda')
+const Boom = require('boom')
 const debug = require('debug')('app:db')
+const mongo = require('./mongodb')
 
-const save = user => {
+const ObjectId = mongo.ObjectId
+
+const sanitaze = document =>
+  document ? R.omit(['_id'], R.merge({ id: document._id.toHexString() }, document)) : null
+
+const existsEmail = async email => {
+  debug(`verifying if email ${email} exists in database`)
+  const db = await mongo.get()
+  const count = await db.collection('users')
+    .countDocuments({ email })
+  return count > 0
+}
+
+const save = async user => {
   debug(`saving user ${user.email} in database`)
-  return Promise.resolve(user)
+
+  const exists = await existsEmail(user.email)
+  if (exists) {
+    throw Boom.conflict('User with the given email already exists', { email: user.email })
+  }
+
+  const db = await mongo.get()
+  const result = await db.collection('users').insertOne(user)
+  return R.merge({ id: result.insertedId.toHexString() }, user)
 }
 
-const find = id => {
+const find = async id => {
   debug(`fetching userId ${id} in database`)
-  return Promise.resolve()
+  const db = await mongo.get()
+  const found = await db.collection('users').findOne({ _id: new ObjectId(id) })
+  return sanitaze(found)
 }
 
-const findByEmail = email => {
+const findByEmail = async email => {
   debug(`fetching email ${email} in database`)
-  return Promise.resolve()
+  const db = await mongo.get()
+  const found = await db.collection('users').findOne({ email })
+  return sanitaze(found)
 }
 
-const update = id => {
+const update = async (id, user) => {
   debug(`updating userId ${id} in database`)
-  return Promise.resolve()
+  const db = await mongo.get()
+  const replaced = await db.collection('users')
+    .findOneAndReplace({ _id: new ObjectId(id) }, user)
+  return sanitaze(replaced)
 }
 
-const patch = id => {
-  debug(`patching userId ${id} in database`)
-  return Promise.resolve()
-}
-
-const del = id => {
+const remove = async id => {
   debug(`deleting userId ${id} in database`)
-  return Promise.resolve()
+  const db = await mongo.get()
+  const replaced = await db.collection('users')
+    .findOneAndDelete({ _id: new ObjectId(id) })
+  return sanitaze(replaced)
 }
 
-const exists = id => {
+const exists = async id => {
   debug(`verifying if userId ${id} exists in database`)
-  return Promise.resolve()
+  const db = await mongo.get()
+  const count = await db.collection('users')
+    .countDocuments({ _id: new ObjectId(id) })
+  return count > 0
 }
 
 module.exports = {
@@ -42,7 +74,6 @@ module.exports = {
   find,
   findByEmail,
   update,
-  patch,
   exists,
-  delete: del,
+  delete: remove,
 }

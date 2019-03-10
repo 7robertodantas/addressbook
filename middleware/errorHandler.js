@@ -1,6 +1,7 @@
 'use strict'
 
 const debug = require('debug')('app:middleware')
+const R = require('ramda')
 const Boom = require('boom')
 
 /**
@@ -19,11 +20,15 @@ const errorHandler = (err, req, res, next) => {
   debug('Error handler received an error')
 
   if (Boom.isBoom(err)) {
-    return res.status(err.output.statusCode || 500).send(err.output.payload)
+    return res.status(err.output.statusCode || 500)
+      .send(R.reject(value => R.isNil(value), { ...err.output.payload, data: err.data }))
   }
+
   const error = Boom.boomify(err, {
     message: 'Something went wrong',
   })
+
+  debug(`Error stack ${err.stack}`)
   return res.status(500).send(error.output.payload)
 }
 

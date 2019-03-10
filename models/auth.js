@@ -17,9 +17,9 @@ const options = config.get('jwt.options')
  * @returns {string} signed jwt token.
  * @throws {Error} if no user was found for the given email and password.
  */
-const sign = (email, password) => {
+const sign = async (email, password) => {
   debug(`logging user for email ${email}`)
-  const user = users.findUserByEmailAndPassword(email, password)
+  const user = await users.findUserByEmailAndPassword(email, password)
   if (!user) {
     throw Boom.notFound('User with the given email and password was not found.', { email })
   }

@@ -8,6 +8,7 @@ const auth = require('../models/auth')
  * This middleware verifies if the current request has 'Authorization'
  * header with Bearer token. If the token is valid, it will add the user
  * contained in the token in the request attribute, as 'request.user'.
+ * Otherwise it will throw unauthorized exception.
  * @param {Request} req current request.
  * @param {Response} res current response.
  * @param {NextFunction} next next handler.
