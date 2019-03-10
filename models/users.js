@@ -15,8 +15,10 @@ const bcryptConfig = config.get('bcrypt')
 const userSchema = Joi.object().keys({
   name: Joi.string().trim().min(3)
     .required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().alphanum().min(3),
+  email: Joi.string().email()
+    .required(),
+  password: Joi.string().alphanum().min(3)
+    .required(),
 }).options({ stripUnknown: true })
 
 /**
@@ -50,7 +52,7 @@ const saveUser = async user => {
   const hash = await bcrypt.hash(value.password, bcryptConfig.get('saltRounds'))
   const toSave = R.merge({ hashPassword: hash }, sanitazedUser)
   const savedUser = await users.save(toSave)
-  return R.merge({ id: savedUser.id }, sanitazedUser)
+  return sanitazeUser(savedUser)
 }
 
 /**
@@ -62,8 +64,8 @@ const saveUser = async user => {
  * @returns {Promise} founded user sanitazed.
  * @see sanitazeUser function.
  */
-const findByEmailAndPassword = async (email, password) => {
-  const user = users.findByEmail(email)
+const findUserByEmailAndPassword = async (email, password) => {
+  const user = await users.findByEmail(email)
   if (!user) {
     throw Boom.notFound('User not found', { email })
   }
@@ -76,27 +78,75 @@ const findByEmailAndPassword = async (email, password) => {
   return sanitazeUser(user)
 }
 
-const findUser = id => {
-  return users.find(id)
+/**
+ * This function fetches the user in database by id.
+ * @param {string} id - user's id
+ * @throws {Error} - If user was not found.
+ * @returns {Promise} founded user sanitazed.
+ * @see sanitazeUser function.
+ */
+const findUser = async id => {
+  const user = await users.find(id)
+  if (!user) {
+    throw Boom.notFound('User was not found', { id })
+  }
+
+  return sanitazeUser(user)
 }
 
-const updateUser = (id, user) => {
-  return users.update(id, user)
+/**
+ * This function saves an user in database.
+ * @param {string} id - the user's id that will have its data replaced.
+ * @param {Object} user - the user to be replaced.
+ * @param {string} user.name - user's name.
+ * @param {string} user.email - user's email.
+ * @param {string} user.password - user's password.
+ * @throws {Error} - Bad Request if the user object doesn't match the schema.
+ * @returns {Promise} saved user with the generated id and without password attribute.
+ */
+const replaceUser = async (id, user) => {
+  const exists = users.exists(id)
+  if (!exists) {
+    throw Boom.notFound('User was not found', { id })
+  }
+
+  const { error, value } = Joi.validate(user, userSchema)
+  if (error) {
+    throw Boom.badRequest('Invalid request, error.', R.pluck('message', error.details))
+  }
+
+  const sanitazedUser = sanitazeUser(value)
+  const hash = await bcrypt.hash(value.password, bcryptConfig.get('saltRounds'))
+  const toReplace = R.merge({ hashPassword: hash }, sanitazedUser)
+  const savedUser = await users.update(id, toReplace)
+  return sanitazeUser(savedUser)
 }
 
 const patchUser = (id, patch) => {
   return users.patch(id, patch)
 }
 
-const deleteUser = id => {
-  return users.delete(id)
+/**
+ * This function deletes the user in database by id.
+ * @param {string} id - user's id
+ * @throws {Error} - If user was not found.
+ * @returns {Promise} deleted user sanitazed.
+ * @see sanitazeUser function.
+ */
+const deleteUser = async id => {
+  const deletedUser = await users.delete(id)
+  if (!deletedUser) {
+    throw Boom.notFound('User was not found', { id })
+  }
+
+  return sanitazeUser(deletedUser)
 }
 
 module.exports = {
   saveUser,
   findUser,
-  findByEmailAndPassword,
-  updateUser,
+  findUserByEmailAndPassword,
+  replaceUser,
   patchUser,
   deleteUser,
 }

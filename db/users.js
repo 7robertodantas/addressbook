@@ -26,11 +26,16 @@ const del = id => {
   debug(`deleting userId ${id} in database`)
 }
 
+const exists = id => {
+  debug(`verifying if userId ${id} exists in database`)
+}
+
 module.exports = {
   save,
   find,
   findByEmail,
   update,
   patch,
+  exists,
   delete: del,
 }

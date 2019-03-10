@@ -17,7 +17,7 @@ describe('auth models', () => {
       name: 'User Name',
       email: 'user@email.com',
     }
-    users.findByEmailAndPassword.mockImplementation(() => mockUser)
+    users.findUserByEmailAndPassword.mockImplementation(() => mockUser)
     const token = auth.sign('user@email.com', 'password')
     expect(token).toBeDefined()
 
@@ -26,7 +26,7 @@ describe('auth models', () => {
     expect(user).toMatchObject(mockUser)
   })
   it('should give error when user was not found', () => {
-    users.findByEmailAndPassword.mockImplementation(() => null)
+    users.findUserByEmailAndPassword.mockImplementation(() => null)
     expect(() => auth.sign('user@email.com', 'password')).toThrow(/not found/u)
   })
   it('should give error when token is invalid', () => {

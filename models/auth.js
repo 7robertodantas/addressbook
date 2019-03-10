@@ -11,7 +11,7 @@ const options = config.get('jwt.options')
 
 const sign = (email, password) => {
   debug(`logging user for email ${email}`)
-  const user = users.findByEmailAndPassword(email, password)
+  const user = users.findUserByEmailAndPassword(email, password)
   if (!user) {
     throw Boom.notFound('User with the given email and password was not found.', { email })
   }
