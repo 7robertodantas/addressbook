@@ -10,9 +10,10 @@ const Boom = require('boom')
  * @param {Response} res current response.
  * @param {NextFunction} next next handler.
  */
-// Unfornately we need to declare 'next' attribute here even though
-// we do not use it. Without it express would not identify this handler
-// function as error middleware.
+// Unfornately it was needed to declare 'next' attribute here,
+// and thus disable eslint no-unused-vars. Even though this
+// attribute is not in use, express won't identify it as
+// an error middleware if it has 3 or less arguments.
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
   debug('Error handler received an error')

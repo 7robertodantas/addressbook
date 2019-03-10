@@ -4,9 +4,11 @@ const debug = require('debug')('app:middleware')
 const Boom = require('boom')
 
 /**
- * Not found error handler.
+ * Not found global error handler.
+ * If the request reach this handler it will
+ * produce a pretty not found error.
  * @throws {Error} not found error.
- * @returns {*} nothing.
+ * @returns {void} nothing.
  */
 const notFound = () => {
   debug('Requested route was not found.')

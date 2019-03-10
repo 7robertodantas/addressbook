@@ -9,6 +9,14 @@ const users = require('./users')
 const secret = config.get('jwt.secretOrPrivateKey')
 const options = config.get('jwt.options')
 
+/**
+ * This function sign a user by email and password
+ * and generates a jwt token as result.
+ * @param {string} email the user's email to be match.
+ * @param {string} password the user's password to be match.
+ * @returns {string} signed jwt token.
+ * @throws {Error} if no user was found for the given email and password.
+ */
 const sign = (email, password) => {
   debug(`logging user for email ${email}`)
   const user = users.findUserByEmailAndPassword(email, password)
@@ -23,6 +31,14 @@ const sign = (email, password) => {
   }
 }
 
+/**
+ * Validates a token and return the user contained
+ * in it, if the token is valid.
+ * @param {string} token the token to be validated.
+ * @returns {user} user that was contained in token.
+ * @throws {Error} if token is not valid, malformed,
+ * expired or has a bad signature.
+ */
 const verify = token => {
   debug(`verifying token ${token}`)
   try {
