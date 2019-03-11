@@ -4,8 +4,8 @@ const debug = require('debug')('app:middleware')
 const Boom = require('boom')
 
 /**
- * This middleware checks if the authenticated is owner of a given resource
- * by verifying if its id is the same as the requested in 'userId' path variable.
+ * Checks if the authenticated user is owner of a given resource by checking
+ * if its id is the same as the requested in 'userId' path variable.
  * @param {Request} req current request.
  * @param {Response} res current response.
  * @param {NextFunction} next next handler.

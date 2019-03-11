@@ -7,9 +7,25 @@ const mongo = require('./mongodb')
 
 const ObjectId = mongo.ObjectId
 
-const sanitaze = document =>
-  document ? R.omit(['_id'], R.merge({ id: document._id.toHexString() }, document)) : null
+/**
+ * Converts document '_id': ObjectId property in 'id': String property.
+ * @param {Object} document to be sanitazed.
+ * @returns {Object} partial copy of document
+ * with 'id' property or null if the document is null.
+ */
+const sanitaze = document => {
+  if (document && document._id) {
+    return R.omit(['_id'], R.merge({ id: document._id.toHexString() }, document))
+  }
+  return document
+}
 
+
+/**
+ * Validates if a given email exists in database.
+ * @param {string} email to be verified if exists in database.
+ * @returns {boolean} true if it exists, false otherwise.
+ */
 const existsEmail = async email => {
   debug(`verifying if email ${email} exists in database`)
   const db = await mongo.get()
@@ -18,6 +34,12 @@ const existsEmail = async email => {
   return count > 0
 }
 
+/**
+ * Save the user in database.
+ * @param {Object} user to be saved in database.
+ * @returns {Object} saved user instance.
+ * @throws {Error} if user.email already exist in database.
+ */
 const save = async user => {
   debug(`saving user ${user.email} in database`)
 
@@ -31,6 +53,12 @@ const save = async user => {
   return R.merge({ id: result.insertedId.toHexString() }, user)
 }
 
+/**
+ * Find the user by id.
+ * @param {string} id user id.
+ * @returns {Object} user object or null if doesn't exist.
+ * @see sanitaze
+ */
 const find = async id => {
   debug(`fetching userId ${id} in database`)
   const db = await mongo.get()
@@ -38,6 +66,12 @@ const find = async id => {
   return sanitaze(found)
 }
 
+/**
+ * Find the user by email.
+ * @param {string} email user email.
+ * @returns {Object} user object or null if doesn't exist.
+ * @see sanitaze
+ */
 const findByEmail = async email => {
   debug(`fetching email ${email} in database`)
   const db = await mongo.get()
@@ -45,22 +79,41 @@ const findByEmail = async email => {
   return sanitaze(found)
 }
 
+/**
+ * Replaces the user content in database.
+ * @param {string} id user id.
+ * @param {Object} user user content
+ * @returns {Object} user object or null if doesn't exist.
+ * @see sanitaze
+ */
 const update = async (id, user) => {
   debug(`updating userId ${id} in database`)
   const db = await mongo.get()
-  const replaced = await db.collection('users')
+  const mongoId = { _id: new ObjectId(id) }
+  await db.collection('users')
     .findOneAndReplace({ _id: new ObjectId(id) }, user)
-  return sanitaze(replaced)
+  return sanitaze(R.merge(mongoId, user))
 }
 
+/**
+ * Delete user from database.
+ * @param {string} id user id
+ * @returns {Object} deleted user or null if doesn't exist.
+ */
 const remove = async id => {
   debug(`deleting userId ${id} in database`)
   const db = await mongo.get()
-  const replaced = await db.collection('users')
+  const removed = await find(id)
+  await db.collection('users')
     .findOneAndDelete({ _id: new ObjectId(id) })
-  return sanitaze(replaced)
+  return removed
 }
 
+/**
+ * Validate if a given id exists in database.
+ * @param {string} id to be verified if exists in database.
+ * @returns {boolean} true if it exists, false otherwise.
+ */
 const exists = async id => {
   debug(`verifying if userId ${id} exists in database`)
   const db = await mongo.get()

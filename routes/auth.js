@@ -9,10 +9,12 @@ const router = new express.Router()
 
 router.post('/login', wrap(async (req, res) => {
   const token = await auth.sign(req.body.email, req.body.password)
-  res.status(200).send({
-    accessToken: token,
-    tokenType: 'bearer',
-  })
+  res.status(200)
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      accessToken: token,
+      tokenType: 'bearer',
+    })
 }))
 
 router.post('/register', wrap(async (req, res) => {

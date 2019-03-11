@@ -9,11 +9,21 @@ const mongoUri = config.get('mongodb.uri')
 const mongoDatabase = config.get('mongodb.database')
 const mongoOptions = config.get('mongodb.options')
 
+/**
+ * Variable to hold current
+ * mongo connection.
+ */
 const state = {
   db: null,
   client: null,
 }
 
+/**
+ * Returns the current database connection or creates
+ * a new one if it doesn't exist.
+ * or creates a new one if not exists yet.
+ * @returns {Promise<Db>} mongo database.
+ */
 const get = async () => {
   if (state.client) {
     debug('returning current db connection')
@@ -29,14 +39,20 @@ const get = async () => {
   return state.db
 }
 
+/**
+ * Close any database connection.
+ * @returns {null} nothing.
+ */
 const stop = async () => {
   if (state.db) {
     debug('db instance exists')
+    state.db = null
   }
   if (state.client) {
     debug('closing client')
     await state.client.close(true)
     debug('client connection closed')
+    state.client = null
   }
   debug('client does not exist.')
   return null

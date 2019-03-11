@@ -10,8 +10,8 @@ const secret = config.get('jwt.secretOrPrivateKey')
 const options = config.get('jwt.options')
 
 /**
- * This function sign a user by email and password
- * and generates a jwt token as result.
+ * Sign a user by email and password and generates a
+ * jwt token as result.
  * @param {string} email the user's email to be match.
  * @param {string} password the user's password to be match.
  * @returns {string} signed jwt token.
@@ -32,8 +32,7 @@ const sign = async (email, password) => {
 }
 
 /**
- * Validates a token and return the user contained
- * in it, if the token is valid.
+ * Validates the given token and return its user.
  * @param {string} token the token to be validated.
  * @returns {user} user that was contained in token.
  * @throws {Error} if token is not valid, malformed,

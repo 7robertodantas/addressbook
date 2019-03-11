@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jest --verbose --detectOpenHandles"
+    "test": "jest --verbose"
   },
   "engines": {
     "node": ">=8.3.0"
@@ -21,9 +21,8 @@
   },
   "homepage": "https://github.com/7robertodantas/addressbook#readme",
   "jest": {
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/setup.js"
-    ]
+    "globalSetup": "<rootDir>/tests/integration/setup.js",
+    "globalTeardown": "<rootDir>/tests/integration/teardown.js"
   },
   "dependencies": {
     "bcrypt": "^3.0.4",

@@ -7,9 +7,16 @@ const firebase = require('firebase')
 
 firebase.initializeApp(config.get('firebase'))
 
+/**
+ * Save the user contact in database.
+ * @param {string} userId owner of the contact
+ * @param {Object} contact contact object to be saved in user's collection.
+ * @returns {Promise} with the saved contact.
+ */
 const save = async (userId, contact) => {
   debug(`saving userId ${userId} contact ${contact} in firebase`)
-  const reference = await firebase.database().ref('/users')
+  const reference = await firebase.database()
+    .ref('/users')
     .child(userId)
     .child('contacts')
     .push(contact)

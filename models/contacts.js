@@ -18,8 +18,7 @@ const contactSchema = Joi.object().keys({
 }).options({ stripUnknown: true })
 
 /**
- * This function parses the user object in the schema
- * and validates it.
+ * Parses the user object in the schema and validates it.
  * @param {Object} contact - the contact instance.
  * @param {string} contact.name - contact's name.
  * @param {string} contact.email - contact's email.
@@ -36,7 +35,7 @@ const parseSchema = contact => {
 }
 
 /**
- * This function parses a contact and save it in some database.
+ * Parses a contact, validates it and save it in some database.
  * @param {string} userId - the contact's list owner id.
  * @param {Object} contact - the contact instance.
  * @param {string} contact.name - contact's name.
