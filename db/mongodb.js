@@ -3,8 +3,10 @@
 const debug = require('debug')('app:db')
 const config = require('config')
 const mongodb = require('mongodb')
+const { MongoMemoryServer } = require('mongodb-memory-server')
 
 const ObjectId = mongodb.ObjectId
+const mongoEmbedded = config.get('mongodb.embedded')
 const mongoUri = config.get('mongodb.uri')
 const mongoDatabase = config.get('mongodb.database')
 const mongoOptions = config.get('mongodb.options')
@@ -14,8 +16,10 @@ const mongoOptions = config.get('mongodb.options')
  * mongo connection.
  */
 const state = {
+  uri: mongoUri,
   db: null,
   client: null,
+  server: null,
 }
 
 /**
@@ -29,18 +33,25 @@ const get = async () => {
     debug('returning current db connection')
     return state.db
   }
-  const connection = await mongodb.MongoClient.connect(mongoUri, {
+
+  if (mongoEmbedded) {
+    state.server = new MongoMemoryServer()
+    state.uri = await state.server.getConnectionString()
+  }
+
+  const connection = await mongodb.MongoClient.connect(state.uri, {
     useNewUrlParser: mongoOptions.get('useNewUrlParser'),
     poolSize: mongoOptions.get('poolSize'),
   })
+
   state.db = connection.db(mongoDatabase)
   state.client = connection
-  debug(`connected to mongodb on ${mongoUri}`)
+  debug(`connected to mongodb on ${state.uri}`)
   return state.db
 }
 
 /**
- * Close any database connection.
+ * Close all database connections.
  * @returns {null} nothing.
  */
 const stop = async () => {
@@ -54,8 +65,13 @@ const stop = async () => {
     debug('client connection closed')
     state.client = null
   }
-  debug('client does not exist.')
-  return null
+  if (state.server) {
+    debug('closing embedded server')
+    await state.server.stop()
+    debug('server closed')
+    state.server = null
+  }
+  return state
 }
 
 

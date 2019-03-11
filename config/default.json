@@ -24,7 +24,8 @@
     "options": {
       "useNewUrlParser": true,
       "poolSize": 10
-    }
+    },
+    "embedded": false
   },
   "firebase": {
     "apiKey": "AIzaSyBe1oQS_dhMIRhIWVQa3StEAt6qCmvtGgI",

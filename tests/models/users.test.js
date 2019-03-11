@@ -228,7 +228,7 @@ describe('users models', () => {
     })
   })
   describe('patchUser', () => {
-    it('it should be able to patch user name', async () => {
+    it('should be able to patch user name', async () => {
       const hash = await users.hashPassword('password')
       const existingUser = {
         id: 'userId',
@@ -255,7 +255,7 @@ describe('users models', () => {
         email: 'user@email.com',
       })
     })
-    it('it should be able to patch user email', async () => {
+    it('should be able to patch user email', async () => {
       const hash = await users.hashPassword('password')
       const existingUser = {
         id: 'userId',
@@ -282,7 +282,7 @@ describe('users models', () => {
         email: 'second2update@email.com',
       })
     })
-    it('it should be able to patch user password', async () => {
+    it('should be able to patch user password', async () => {
       const hash = await users.hashPassword('password')
       const existingUser = {
         id: 'userId',
