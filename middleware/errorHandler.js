@@ -17,19 +17,15 @@ const Boom = require('boom')
 // an error middleware if it has 3 or less arguments.
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
-  debug('Error handler received an error')
-
   if (Boom.isBoom(err)) {
-    return res.status(err.output.statusCode || 500)
-      .send(R.reject(value => R.isNil(value), { ...err.output.payload, data: err.data }))
+    const details = R.reject(value => R.isNil(value), { ...err.output.payload, data: err.data })
+    return res.status(err.output.statusCode || 500).send(details)
   }
 
-  const error = Boom.boomify(err, {
-    message: 'Something went wrong',
-  })
-
   debug(`Error stack ${err.stack}`)
-  return res.status(500).send(error.output.payload)
+  const error = Boom.boomify(err)
+
+  return res.status(500).send({ ...error.output.payload, details: err.message })
 }
 
 module.exports = errorHandler

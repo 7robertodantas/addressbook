@@ -19,7 +19,22 @@
     "saltRounds": 10
   },
   "mongodb": {
-    "database": "addressbook-test",
-    "embedded": true
+    "database": "addressbook-test"
+  },
+  "firebase": {
+    "apiKey": "test",
+    "authDomain": "localhost",
+    "databaseURL": "localhost",
+    "projectId": "addressbook-test",
+    "storageBucket": "localhost",
+    "messagingSenderId": "addressbook-test"
+  },
+  "test" : {
+    "mongodb": {
+      "embedded": true
+    },
+    "firebase": {
+      "embedded": true
+    }
   }
 }

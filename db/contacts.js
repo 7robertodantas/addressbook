@@ -5,7 +5,10 @@ const debug = require('debug')('app:db')
 const config = require('config')
 const firebase = require('firebase')
 
-firebase.initializeApp(config.get('firebase'))
+const firebaseOptions = config.get('firebase')
+
+debug(`Initializing firebase on ${firebaseOptions.databaseURL}`)
+firebase.initializeApp(firebaseOptions)
 
 /**
  * Save the user contact in database.
@@ -14,7 +17,7 @@ firebase.initializeApp(config.get('firebase'))
  * @returns {Promise} with the saved contact.
  */
 const save = async (userId, contact) => {
-  debug(`saving userId ${userId} contact ${contact} in firebase`)
+  debug(`saving userId ${userId} contact ${contact.email} in firebase`)
   const reference = await firebase.database()
     .ref('/users')
     .child(userId)

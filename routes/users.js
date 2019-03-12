@@ -42,10 +42,9 @@ router.post('/:userId/contacts', wrap(async (req, res) => {
   const userId = req.params.userId
   const contact = req.body
   const created = await contacts.saveContact(userId, contact)
-  const location = `${config.get('firebase.databaseURL')}\
-  /users/${userId}/contacts/${created.id}.json`
+  const baseLocation = config.get('firebase.databaseURL')
   res
-    .set('Location', location)
+    .set('Location', `${baseLocation}/users/${userId}/contacts/${created.id}.json`)
     .status(201)
     .send(created)
 }))

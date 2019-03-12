@@ -2,5 +2,8 @@
   "port": "PORT",
   "mongodb": {
     "uri": "MONGODB_URI"
+  },
+  "firebase": {
+    "databaseURL": "FIREBASE_URI"
   }
 }
