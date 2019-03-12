@@ -26,7 +26,7 @@ router.get('/:userId', wrap(async (req, res) => {
 }))
 
 /**
- * Replace all user info - except the con.
+ * Replace all user info.
  */
 router.put('/:userId', wrap(async (req, res) => {
   const user = await users.replaceUser(req.params.userId, req.body)

@@ -27,7 +27,7 @@
     }
   },
   "firebase": {
-    "apiKey": "AIzaSyBe1oQS_dhMIRhIWVQa3StEAt6qCmvtGgI",
+    "apiKey": "",
     "authDomain": "strv-addressbook-dantas-robert.firebaseapp.com",
     "databaseURL": "https://strv-addressbook-dantas-robert.firebaseio.com",
     "projectId": "strv-addressbook-dantas-robert",
