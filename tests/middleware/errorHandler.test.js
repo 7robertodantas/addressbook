@@ -1,9 +1,17 @@
 'use strict'
 
 const Boom = require('boom')
+const log = require('../../logger')
 const errorHandler = require('../../middleware/errorHandler')
 
+jest.mock('../../logger')
+
 describe('errorHandler middleware', () => {
+
+  beforeAll(() => {
+    log.error.mockImplementation()
+  })
+
   it('should return 500 in case of missing statusCode', () => {
     const sendMock = jest.fn()
     const statusMock = jest.fn(() => ({ send: sendMock }))
@@ -23,6 +31,7 @@ describe('errorHandler middleware', () => {
       message: 'An internal server error occurred',
       statusCode: 500,
     })
+    expect(log.error).toHaveBeenCalled()
   })
   it('should return statusCode in case of \'boom\' error type', () => {
     const sendMock = jest.fn()
@@ -43,6 +52,7 @@ describe('errorHandler middleware', () => {
       message: 'custom error',
       statusCode: 999,
     })
+    expect(log.error).toHaveBeenCalled()
   })
   it('should not include data attribute if it is null', () => {
     const sendMock = jest.fn()
@@ -62,6 +72,7 @@ describe('errorHandler middleware', () => {
       message: 'An error occurred',
       statusCode: 400,
     })
+    expect(log.error).toHaveBeenCalled()
   })
   it('should include data attribute if it has content', () => {
     const sendMock = jest.fn()
@@ -88,5 +99,6 @@ describe('errorHandler middleware', () => {
         email: 'user@email.com',
       },
     })
+    expect(log.error).toHaveBeenCalled()
   })
 })

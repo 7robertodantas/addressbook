@@ -33,5 +33,21 @@
     "projectId": "strv-addressbook-dantas-robert",
     "storageBucket": "strv-addressbook-dantas-robert.appspot.com",
     "messagingSenderId": "581423116590"
+  },
+  "logger": {
+    "file": {
+      "enabled": true,
+      "level": "info",
+      "filename": "./log/app.log",
+      "maxsize": 5242880,
+      "maxFiles": 5,
+      "colorize": false
+    },
+    "console": {
+      "enabled": true,
+      "level": "error",
+      "json": false,
+      "colorize": true
+    }
   }
 }

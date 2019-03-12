@@ -1,10 +1,10 @@
 'use strict'
 
-const debug = require('debug')('app:models')
 const Boom = require('boom')
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const users = require('./users')
+const log = require('../logger')
 
 const secret = config.get('jwt.secretOrPrivateKey')
 const options = config.get('jwt.options')
@@ -18,7 +18,7 @@ const options = config.get('jwt.options')
  * @throws {Error} if no user was found for the given email and password.
  */
 const sign = async (email, password) => {
-  debug(`logging user for email ${email}`)
+  log.debug(`logging user for email ${email}`)
   const user = await users.findUserByEmailAndPassword(email, password)
   if (!user) {
     throw Boom.notFound('User with the given email and password was not found.', { email })
@@ -39,7 +39,7 @@ const sign = async (email, password) => {
  * expired or has a bad signature.
  */
 const verify = token => {
-  debug(`verifying token ${token}`)
+  log.debug(`verifying token ${token}`)
   try {
     const { user } = jwt.verify(token, secret, options.verify)
     return user

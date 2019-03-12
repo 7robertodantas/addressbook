@@ -1,7 +1,7 @@
 'use strict'
 
-const debug = require('debug')('app:middleware')
 const Boom = require('boom')
+const log = require('../logger')
 
 /**
  * Checks if the authenticated user is owner of a given resource by checking
@@ -13,7 +13,7 @@ const Boom = require('boom')
  * @returns {*} next().
  */
 const resourceOwner = (req, res, next) => {
-  debug(`Validating if authenticated user matches userId ${req.params.userId} resource`)
+  log.debug(`validating if authenticated user matches userId ${req.params.userId} resource`)
 
   if (!req.user) {
     throw Boom.unauthorized('User is not authenticated.')

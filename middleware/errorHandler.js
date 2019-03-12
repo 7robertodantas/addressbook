@@ -1,8 +1,8 @@
 'use strict'
 
-const debug = require('debug')('app:middleware')
 const R = require('ramda')
 const Boom = require('boom')
+const log = require('../logger')
 
 /**
  * Global error handler.
@@ -17,14 +17,17 @@ const Boom = require('boom')
 // an error middleware if it has 3 or less arguments.
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
+  // Boom error already have some details.
   if (Boom.isBoom(err)) {
     const details = R.reject(value => R.isNil(value), { ...err.output.payload, data: err.data })
+    log.error(`${req.originalUrl} - ${req.method} - ${req.ip} `, details)
     return res.status(err.output.statusCode || 500).send(details)
   }
-
-  debug(`Error stack ${err.stack}`)
+  // Standard error - converting into boomify to prettify it
   const error = Boom.boomify(err)
-  return res.status(500).send({ ...error.output.payload, details: err.message })
+  const response = { ...error.output.payload, details: err.message }
+  log.error(`${req.originalUrl} - ${req.method} - ${req.ip} `, response)
+  return res.status(500).send(response)
 }
 
 module.exports = errorHandler

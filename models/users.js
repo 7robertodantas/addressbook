@@ -5,6 +5,7 @@ const Boom = require('boom')
 const Joi = require('joi')
 const bcrypt = require('bcrypt')
 const config = require('config')
+const log = require('../logger')
 const users = require('../db/users')
 
 const bcryptConfig = config.get('bcrypt')
@@ -72,6 +73,7 @@ const parseSchema = (user, additionalRequired = []) => {
  * @see sanitazeUser
  */
 const saveUser = async user => {
+  log.debug('validating user to save', user)
   const validatedUser = parseSchema(user, ['password'])
   const hash = await hashPassword(validatedUser.password)
   const sanitazedUser = sanitazeUser(validatedUser)
@@ -90,6 +92,7 @@ const saveUser = async user => {
  * @see sanitazeUser
  */
 const findUserByEmailAndPassword = async (email, password) => {
+  log.debug(`verifying email ${email} and password`)
   const user = await users.findByEmail(email)
   if (!user) {
     throw Boom.notFound('User not found', { email })
@@ -111,6 +114,7 @@ const findUserByEmailAndPassword = async (email, password) => {
  * @see sanitazeUser
  */
 const findUser = async id => {
+  log.debug(`finding user by id ${id}`)
   const user = await users.find(id)
   if (!user) {
     throw Boom.notFound('User was not found', { id })
@@ -131,6 +135,7 @@ const findUser = async id => {
  * @see sanitazeUser function.
  */
 const replaceUser = async (id, user) => {
+  log.debug(`replacing userId ${id} content`, user)
   const exists = await users.exists(id)
   if (!exists) {
     throw Boom.notFound('User was not found', { id })
@@ -168,6 +173,7 @@ const validateSchema = user => {
  * @see sanitazeUser function.
  */
 const patchUser = async (id, patch) => {
+  log.debug(`patching current userId ${id}`, patch)
   const user = await users.find(id)
   if (!user) {
     throw Boom.notFound('User was not found', { id })
@@ -193,6 +199,7 @@ const patchUser = async (id, patch) => {
  * @see sanitazeUser function.
  */
 const deleteUser = async id => {
+  log.debug(`deleting userId ${id}`)
   const deletedUser = await users.delete(id)
   if (!deletedUser) {
     throw Boom.notFound('User was not found', { id })

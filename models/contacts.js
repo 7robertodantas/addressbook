@@ -3,7 +3,7 @@
 const R = require('ramda')
 const Boom = require('boom')
 const Joi = require('joi')
-const debug = require('debug')('app:models')
+const log = require('../logger')
 const contacts = require('../db/contacts')
 const users = require('../db/users')
 
@@ -44,14 +44,13 @@ const parseSchema = contact => {
  * @returns {Object} saved contact with the generated id.
  */
 const saveContact = async (userId, contact) => {
+  log.debug(`saving contact for userId ${userId} in database`, contact)
   const exists = await users.exists(userId)
   if (!exists) {
     throw Boom.notFound('User was not found', { id: userId })
   }
 
   const validatedContact = parseSchema(contact)
-  debug(`current contact ${contact}`)
-
   return contacts.save(userId, validatedContact)
 }
 

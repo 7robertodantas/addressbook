@@ -1,0 +1,12 @@
+{
+  "logger": {
+    "file": {
+      "enabled": false,
+      "level": "info",
+      "filename": "app.log"
+    },
+    "console": {
+      "enabled": true
+    }
+  }
+}

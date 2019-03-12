@@ -2,7 +2,7 @@
 
 const R = require('ramda')
 const Boom = require('boom')
-const debug = require('debug')('app:db')
+const log = require('../logger')
 const mongo = require('./mongodb')
 
 const ObjectId = mongo.ObjectId
@@ -27,7 +27,7 @@ const sanitaze = document => {
  * @returns {boolean} true if it exists, false otherwise.
  */
 const existsEmail = async email => {
-  debug(`verifying if email ${email} exists in database`)
+  log.debug(`verifying if email ${email} exists in database`)
   const db = await mongo.get()
   const count = await db.collection('users')
     .countDocuments({ email })
@@ -41,7 +41,7 @@ const existsEmail = async email => {
  * @throws {Error} if user.email already exist in database.
  */
 const save = async user => {
-  debug(`saving user ${user.email} in database`)
+  log.debug('saving user in database', user)
 
   const exists = await existsEmail(user.email)
   if (exists) {
@@ -60,7 +60,7 @@ const save = async user => {
  * @see sanitaze
  */
 const find = async id => {
-  debug(`fetching userId ${id} in database`)
+  log.debug(`fetching userId ${id} in database`)
   const db = await mongo.get()
   const found = await db.collection('users').findOne({ _id: new ObjectId(id) })
   return sanitaze(found)
@@ -73,7 +73,7 @@ const find = async id => {
  * @see sanitaze
  */
 const findByEmail = async email => {
-  debug(`fetching email ${email} in database`)
+  log.debug(`fetching email ${email} in database`)
   const db = await mongo.get()
   const found = await db.collection('users').findOne({ email })
   return sanitaze(found)
@@ -87,7 +87,7 @@ const findByEmail = async email => {
  * @see sanitaze
  */
 const update = async (id, user) => {
-  debug(`updating userId ${id} in database`)
+  log.debug(`updating userId ${id} in database`, user)
   const db = await mongo.get()
   const mongoId = { _id: new ObjectId(id) }
   await db.collection('users')
@@ -101,7 +101,7 @@ const update = async (id, user) => {
  * @returns {Object} deleted user or null if doesn't exist.
  */
 const remove = async id => {
-  debug(`deleting userId ${id} in database`)
+  log.debug(`deleting userId ${id} in database`)
   const db = await mongo.get()
   const removed = await find(id)
   await db.collection('users')
@@ -115,7 +115,7 @@ const remove = async id => {
  * @returns {boolean} true if it exists, false otherwise.
  */
 const exists = async id => {
-  debug(`verifying if userId ${id} exists in database`)
+  log.debug(`verifying if userId ${id} exists in database`)
   const db = await mongo.get()
   const count = await db.collection('users')
     .countDocuments({ _id: new ObjectId(id) })

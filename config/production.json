@@ -1,0 +1,15 @@
+{
+  "logger": {
+    "file": {
+      "enabled": true,
+      "level": "info",
+      "filename": "app.log",
+      "maxsize": 5242880,
+      "maxFiles": 5,
+      "colorize": false
+    },
+    "console": {
+      "enabled": false
+    }
+  }
+}

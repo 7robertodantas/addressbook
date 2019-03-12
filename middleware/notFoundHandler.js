@@ -1,6 +1,5 @@
 'use strict'
 
-const debug = require('debug')('app:middleware')
 const Boom = require('boom')
 
 /**
@@ -11,7 +10,6 @@ const Boom = require('boom')
  * @returns {void} nothing.
  */
 const notFound = () => {
-  debug('Requested route was not found.')
   throw Boom.notFound('The requested resource was not found')
 }
 

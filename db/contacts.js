@@ -1,16 +1,16 @@
 'use strict'
 
 const R = require('ramda')
-const debug = require('debug')('app:db')
 const config = require('config')
 const firebase = require('firebase')
+const log = require('../logger')
 
 const firebaseOptions = config.get('firebase')
 
 /**
  * Initialize firebase.
  */
-debug(`Initializing firebase on ${firebaseOptions.databaseURL}`)
+log.info(`Initializing firebase at ${firebaseOptions.databaseURL}`)
 firebase.initializeApp(firebaseOptions)
 
 /**
@@ -20,7 +20,7 @@ firebase.initializeApp(firebaseOptions)
  * @returns {Promise} with the saved contact.
  */
 const save = async (userId, contact) => {
-  debug(`saving userId ${userId} contact ${contact.email} in firebase`)
+  log.debug(`saving contact for userId ${userId} in firebase`, contact)
   const reference = await firebase.database()
     .ref('/users')
     .child(userId)

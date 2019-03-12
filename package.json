@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jest --verbose"
+    "test": "ALLOW_CONFIG_MUTATIONS=true jest --verbose"
   },
   "engines": {
     "node": ">=8.3.0"
@@ -33,13 +33,13 @@
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.0",
     "mongodb": "^3.1.13",
-    "ramda": "^0.26.1"
+    "ramda": "^0.26.1",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.5.2",
     "@strv/commitlint-config": "^1.0.0",
     "@strv/eslint-config-node": "^1.0.1",
-    "debug": "^4.1.1",
     "eslint": "^5.15.1",
     "eslint-plugin-jest": "^22.3.0",
     "firebase-server": "^1.0.1",

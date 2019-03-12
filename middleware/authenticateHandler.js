@@ -1,6 +1,6 @@
 'use strict'
 
-const debug = require('debug')('app:middleware')
+const log = require('../logger')
 const Boom = require('boom')
 const auth = require('../models/auth')
 
@@ -17,7 +17,7 @@ const auth = require('../models/auth')
  * @returns {*} next().
  */
 const authenticate = (req, res, next) => {
-  debug('Validating request token')
+  log.debug('validating request token')
 
   const token = req.headers.authorization
   if (!token) {

@@ -29,6 +29,16 @@
     "storageBucket": "localhost",
     "messagingSenderId": "addressbook-test"
   },
+  "logger": {
+    "file": {
+      "enabled": false,
+      "level": "debug"
+    },
+    "console": {
+      "enabled": true,
+      "level": "info"
+    }
+  },
   "test" : {
     "mongodb": {
       "embedded": true

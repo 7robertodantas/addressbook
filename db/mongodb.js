@@ -1,8 +1,8 @@
 'use strict'
 
-const debug = require('debug')('app:db')
 const config = require('config')
 const mongodb = require('mongodb')
+const log = require('../logger')
 
 const ObjectId = mongodb.ObjectId
 
@@ -23,7 +23,7 @@ const state = {
  */
 const get = async () => {
   if (state.client) {
-    debug('returning current db connection')
+    log.debug('returning current db connection')
     return state.db
   }
 
@@ -32,7 +32,7 @@ const get = async () => {
   const database = config.get('mongodb.database')
 
   const connection = await mongodb.MongoClient.connect(uri, options)
-  debug(`connected to mongodb on ${uri}`)
+  log.info(`Connected to mongodb at ${uri}`)
   state.db = connection.db(database)
   state.client = connection
   return state.db
@@ -44,9 +44,9 @@ const get = async () => {
  */
 const stop = async () => {
   if (state.client) {
-    debug('closing client')
+    log.debug('Closing client')
     await state.client.close(true)
-    debug('client connection closed')
+    log.debug('Client connection closed')
     state.client = null
   }
   return state

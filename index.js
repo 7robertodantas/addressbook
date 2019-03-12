@@ -1,12 +1,12 @@
 'use strict'
 
-const debug = require('debug')('app:index')
 const config = require('config')
+const log = require('./logger')
 const app = require('./app')
 
 const port = config.get('port')
 const server = app.listen(port, () => {
-  debug(`Listening on port ${port}`)
+  log.info(`listening on port ${port}`)
 })
 
 module.exports = server

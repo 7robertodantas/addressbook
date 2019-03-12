@@ -1,10 +1,10 @@
 /* eslint-disable no-process-env */
 'use strict'
 
-const debug = require('debug')('app:test:setup')
 const config = require('config')
 const FirebaseServer = require('firebase-server')
 const { MongoMemoryServer } = require('mongodb-memory-server')
+const log = require('../../logger')
 const mongo = require('../../db/mongodb')
 
 module.exports = async () => {
@@ -16,7 +16,7 @@ module.exports = async () => {
   // perhaps changing the config library to another.
   process.env.ALLOW_CONFIG_MUTATIONS = true
   if (config.get('test.firebase.embedded')) {
-    debug('Initializing embedded firebase')
+    log.info('Initializing embedded firebase')
     const firebaseServer = new FirebaseServer(0)
     const databaseURL = `ws://localhost:${firebaseServer.getPort()}`
 
@@ -30,7 +30,7 @@ module.exports = async () => {
     global.EMBEDDEDFIREBASE = firebaseServer
   }
   if (config.get('test.mongodb.embedded')) {
-    debug('Initializing embedded mongodb')
+    log.info('Initializing embedded mongodb')
     const mongoServer = new MongoMemoryServer()
     const uri = await mongoServer.getConnectionString()
 
@@ -44,8 +44,8 @@ module.exports = async () => {
     global.EMBEDDEDMONGODB = mongoServer
   }
 
-  debug('Initializing mongodb connection')
+  log.info('Initializing mongodb connection')
   const db = await mongo.get()
-  debug('Cleaning database')
+  log.info('Cleaning database')
   await db.dropDatabase()
 }

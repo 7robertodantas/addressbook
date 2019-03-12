@@ -1,24 +1,24 @@
 'use strict'
 
-const debug = require('debug')('app:test:teardown')
 const config = require('config')
 const mongo = require('../../db/mongodb')
+const log = require('../../logger')
 
 module.exports = async () => {
-  debug('Cleaning database')
+  log.info('Cleaning database')
   const db = await mongo.get()
   await db.dropDatabase()
 
-  debug('Stopping mongodb connection')
+  log.info('Stopping mongodb connection')
   await mongo.stop()
 
   if (config.get('test.mongodb.embedded')) {
-    debug('Closing embedded mongodb')
+    log.info('Closing embedded mongodb')
     global.EMBEDDEDMONGODB.stop()
   }
 
   if (config.get('test.firebase.embedded')) {
-    debug('Closing embedded firebase')
+    log.info('Closing embedded firebase')
     global.EMBEDDEDFIREBASE.close()
   }
 }
