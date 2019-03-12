@@ -7,8 +7,8 @@ const mongodb = require('mongodb')
 const ObjectId = mongodb.ObjectId
 
 /**
- * Variable to hold current
- * mongo connection.
+ * Variable that holds the
+ * current mongo connection.
  */
 const state = {
   db: null,
@@ -43,10 +43,6 @@ const get = async () => {
  * @returns {null} nothing.
  */
 const stop = async () => {
-  if (state.db) {
-    debug('db instance exists')
-    state.db = null
-  }
   if (state.client) {
     debug('closing client')
     await state.client.close(true)

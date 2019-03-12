@@ -7,6 +7,9 @@ const firebase = require('firebase')
 
 const firebaseOptions = config.get('firebase')
 
+/**
+ * Initialize firebase.
+ */
 debug(`Initializing firebase on ${firebaseOptions.databaseURL}`)
 firebase.initializeApp(firebaseOptions)
 
