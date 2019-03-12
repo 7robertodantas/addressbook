@@ -24,7 +24,6 @@ const errorHandler = (err, req, res, next) => {
 
   debug(`Error stack ${err.stack}`)
   const error = Boom.boomify(err)
-
   return res.status(500).send({ ...error.output.payload, details: err.message })
 }
 
