@@ -22,7 +22,9 @@
   "homepage": "https://github.com/7robertodantas/addressbook#readme",
   "jest": {
     "globalSetup": "<rootDir>/tests/integration/setup.js",
-    "globalTeardown": "<rootDir>/tests/integration/teardown.js"
+    "globalTeardown": "<rootDir>/tests/integration/teardown.js",
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
   },
   "dependencies": {
     "bcrypt": "^3.0.4",

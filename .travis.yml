@@ -10,3 +10,5 @@ deploy:
   app: strv-addressbook-dantas-robert
   api_key:
     secure: DFTyU3bMMV9iXpgsLrL254gx0PD9imzZNT82Ig5JRYbuWX8xZdNoj6yM0MVrWUSrK1Ho4Ug7nrcirSAkqg791SJQOzItTHKhwh99EcmwzmkBL5a3mQ+AcpKEMI5wAvrFNablD+S3hArDZ6RNTo3tOU3fqIU1vqntaYZ8Xk5/3hcWzO5pfc/UWOST3vZoTQhnDLYvtwFi+6ptopTJfMwdmsWUYLKKAdXoIqR/lbwV+dNfhm9TTSU/eeti2g+D7/boVRqngm9WDQd7wOSU5JXLlc7P+l2gKoRVELxQKy092BNjFDcGIAISE5zluOORSIkBk4bZq9VAPkkV4+N7aHkVXFDSkHOgkpL6/grIENDWtOVH81/EMNIdVQiRb1mjhKSCMtezzd29QKCoYQoYv5bpUr567ovLWSml5HyUvHIkCQrO7ys1gyP2Sfrcv8WlUWy62xhriCm7IDbh345yz2/GxrEqwRL3yQexHu1Ex0Xr0oW/C1BYe4E/wb9teck1KVVC4hgK/MXmmwPL81YHB/E6Mdh+fwL2h9oOMKwTDGGNb2R4LbKit0DSZA6M4aOdIp8uVdX0w0CFQiJ6bn2gWndEkUEWHTunGfxZDfR9Vb3cQx1a5pGp9Ex+me3E+G+X+QMS3xb++CxZEUY+42DP0T1keKyCpT/T1P8F0c5ieifgRRc=
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -e TRAVIS_NODE_VERSION
