@@ -14,8 +14,7 @@ const bcryptConfig = config.get('bcrypt')
  * Represents the expected user's object.
  */
 const userSchema = Joi.object().keys({
-  name: Joi.string().trim().min(3)
-    .required(),
+  name: Joi.string().trim().min(3),
   email: Joi.string().email()
     .required(),
   password: Joi.string().alphanum().min(3),

@@ -13,8 +13,11 @@ const users = require('../db/users')
 const contactSchema = Joi.object().keys({
   name: Joi.string().trim().min(3)
     .required(),
-  email: Joi.string().email()
-    .required(),
+  email: Joi.string().email(),
+  address: Joi.object().keys({
+    street: Joi.string().required(),
+    zipCode: Joi.string().required(),
+  }),
 }).options({ stripUnknown: true })
 
 /**

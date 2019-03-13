@@ -29,11 +29,10 @@ const get = async () => {
 
   const uri = config.get('mongodb.uri')
   const options = config.get('mongodb.options')
-  const database = config.get('mongodb.database')
 
   const connection = await mongodb.MongoClient.connect(uri, options)
   log.info(`Connected to mongodb at ${uri}`)
-  state.db = connection.db(database)
+  state.db = connection.db()
   state.client = connection
   return state.db
 }

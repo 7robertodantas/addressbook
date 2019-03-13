@@ -6,7 +6,8 @@
       "filename": "app.log"
     },
     "console": {
-      "enabled": true
+      "enabled": true,
+      "level": "info"
     }
   }
 }
