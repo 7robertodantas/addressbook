@@ -8,7 +8,6 @@ jest.mock('../../db/users')
 jest.mock('../../db/contacts')
 
 describe('contacts models', () => {
-
   beforeEach(() => {
     usersDb.exists.mockClear()
     contactsDb.save.mockClear()
@@ -20,6 +19,10 @@ describe('contacts models', () => {
       const contact = {
         name: 'A contact name',
         email: 'contact@email.com',
+        address: {
+          street: 'A street',
+          zipCode: 'A zip code',
+        },
       }
       await contacts.saveContact('userId', contact)
       expect(usersDb.exists).toHaveBeenCalled()

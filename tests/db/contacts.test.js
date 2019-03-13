@@ -3,7 +3,6 @@
 const firebase = require('firebase')
 const contacts = require('../../db/contacts')
 
-
 jest.mock('firebase')
 
 describe('contacts db', () => {

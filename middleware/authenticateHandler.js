@@ -1,7 +1,7 @@
 'use strict'
 
-const log = require('../logger')
 const Boom = require('boom')
+const log = require('../logger')
 const auth = require('../models/auth')
 
 /**

@@ -4,7 +4,6 @@ const request = require('supertest')
 const app = require('../../../app')
 
 describe('auth routes', () => {
-
   describe('POST /register', () => {
     it('should be able to register', async () => {
       await request(app)
@@ -19,7 +18,6 @@ describe('auth routes', () => {
   })
 
   describe('POST /login', () => {
-
     const agent = request.agent(app)
     const user = {
       name: 'Test Login User',
@@ -40,5 +38,4 @@ describe('auth routes', () => {
         .expect(200)
     })
   })
-
 })

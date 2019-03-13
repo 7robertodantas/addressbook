@@ -82,7 +82,7 @@ const saveUser = async user => {
 }
 
 /**
- * Fetches the user in database and 
+ * Fetches the user in database and
  * validate its password with the given password.
  * @param {string} email - user's email
  * @param {string} password - password to match with the user's password.

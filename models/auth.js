@@ -3,8 +3,8 @@
 const Boom = require('boom')
 const jwt = require('jsonwebtoken')
 const config = require('config')
-const users = require('./users')
 const log = require('../logger')
+const users = require('./users')
 
 const secret = config.get('jwt.secretOrPrivateKey')
 const options = config.get('jwt.options')

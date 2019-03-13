@@ -7,7 +7,6 @@ const users = require('../../models/users')
 jest.mock('../../db/users')
 
 describe('users models', () => {
-
   beforeEach(() => {
     usersDb.exists.mockClear()
     usersDb.update.mockClear()

@@ -7,7 +7,6 @@ const errorHandler = require('../../middleware/errorHandler')
 jest.mock('../../logger')
 
 describe('errorHandler middleware', () => {
-
   beforeAll(() => {
     log.error.mockImplementation()
   })

@@ -17,7 +17,6 @@ describe('authenticate middleware', () => {
       status: statusMock,
     }
     const next = jest.fn()
-    
     expect(() => authenticate(req, res, next)).toThrow(/required/u)
     expect(next).not.toHaveBeenCalled()
   })
@@ -48,8 +47,8 @@ describe('authenticate middleware', () => {
       status: statusMock,
     }
     const next = jest.fn()
-    auth.verify.mockImplementation(() => { 
-      throw Boom.unauthorized('invalid token') 
+    auth.verify.mockImplementation(() => {
+      throw Boom.unauthorized('invalid token')
     })
     expect(() => authenticate(req, res, next)).toThrow(/invalid token/u)
     expect(next).not.toHaveBeenCalled()
