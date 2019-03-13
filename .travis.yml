@@ -1,4 +1,11 @@
 language: node_js
 node_js:
-  - "10"
+- '10'
 cache: npm
+branches:
+  only:
+  - master
+deploy:
+  provider: heroku
+  api_key:
+    secure: jRCufqfl4NwFXqiqIUVj7H3SuuzZl86WQ5Gvu/3OMANC8ZVFZVcwZiebfXha0tWWEhqOyMm5EY1DI9VFGYmHEXBuDUmMuCrBP2hp0ubQ1amsciSjlwnQsDFbWvLH3huox5A/pjVLSXi3A17ppgQfQDLMlUZ6gj9GI1uG12vF3HTBIx59lWiJVlFXRxMRrkrMjpb9ddfQedikT0JTADHqXy4CsdmTYcTuyDDA2ja/jau+1VEcWjeB5aLqwRNz1WDK/fIinpqlphUbOMEpRtjb5yIaFSddN1wzSzXU72rLogBIn9+Fb1/v23VnUtcKid0sTjHHlnSyrq5avCXsOEdlfs1x8n7qUxzbgptuvRXHojO/2yQhlslKVid0yMqorKg484NIRQ4cIwZECISgTYdxDWORS/W10kbSmrxvUougz66K1YrgThv/GfBLeecFnRNGrE1P6Ld5Cm2qk0vDoVKYsvFyQt18pzHE9WSU08X0NLuPd/l0qOjKB0Upo23mVneCjbHLB4fgbtt6b7IFSlKwPIoHSi4qEbj5EnOzxVP1Xkavq/qHI3Qr8PvTz0FdpN8Z6RdsSGmFODpUNFiW/6V91YJUUp602sHAeW2wqjU5Fsp0E5sePDyM9D8kP91CfeautEk59pSyjr4o2Sn98OEpCV954LoeL45W49M9uZOpIIo=
