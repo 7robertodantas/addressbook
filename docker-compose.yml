@@ -5,7 +5,7 @@ services:
     build: '.'
     container_name: app
     ports:
-      - 3000:3000
+      - 3000:3000 # Binding port 3000 in host to the container port 3000 (0.0.0.0)
     environment:
       FIREBASE_APIKEY: ''
       MONGODB_URI: 'mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongo:27017/addressbook'
@@ -15,7 +15,7 @@ services:
     image: 'mongo:4.0.6'
     container_name: mongo
     ports:
-      - 127.0.0.1:27017:27017
+      - 127.0.0.1:0:27017 # Binding any port available in the host to the container port 27017 (127.0.0.1)
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
