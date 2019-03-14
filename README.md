@@ -50,7 +50,7 @@ npm run test
 In order to run locally you must have some [mongodb][mongodb-url] instance running in your machine or in some server that you have access to it from your local machine.
 
 #### Manually using config files
-You can set the [mongodb][mongodb-url] settings by changing the config file corresponding to the `NODE_ENV`. By default it will be `config/development`, unless you set `NODE_ENV` to something else or ran the tests, which changes it to `test`. After changing the config file correspondent to your environment according to your needs, you should be able to execute the following command and run:
+You can set your [mongodb][mongodb-url] settings by changing the config file corresponding to the `NODE_ENV`. By default it will be `config/development`, unless if you had set `NODE_ENV` to something else or are executing the tests, which changes it to `test`. After changing the correspondent config file to your environment according to your needs, you should be able to execute the following command and run:
 
 ```
 npm install
@@ -101,7 +101,7 @@ docker-compose up
 
 ### Principles
 
-I tried as much as possible to separate responsibilities on each module/layer. For instance, I assumed that only the `models` layer should know how to manage, change, customize and validate a given schema object and it should only delegate a data to the database layer after it is valid. The `db` layer, on the other hand, should be concerned only in knowing how to communicate with the database and obeying the "implicit" contract of returning an `id` property inside the saved object and last but not least, the `middleware` and `routes` layers should avoid importing and using `db` layer directly, as it generally doesn't do any sort of validation, these layers should rely on `models` module.
+I tried as much as possible to separate responsibilities on each module/layer. For instance, I assumed that only the `models` layer should know how to manage, change, customize and validate a given schema object and it should only delegate a data to `db` layer after it is valid. The `db` layer, on the other hand, should be concerned only in knowing how to communicate with the database and also obey the "implicit" contract of returning an `id` property inside the saved object and last but not least, the `middleware` and `routes` layers should avoid to import and use `db` layer directly, as it doesn't do any sort of validation, these layers should rely on `models` module instead.
 
 
 ### Components
@@ -109,12 +109,12 @@ I tried as much as possible to separate responsibilities on each module/layer. F
 | Folder / File | Description |
 |:--------------|:------------|
 | **app.js** | This file configures the app and add all routes |
-| **index.js** | This file imports the app and start a http server |
+| **index.js** | This file imports the app and starts a http server |
 | **/routes** | This module contains all things related to http mapping and `express` endpoints. |
 | **/middleware** | This module contains all middlewares used in `express` routes. |
 | **/models** | This module contains all data schema validation and management. |
-| **/db** | This module contains all database's communications an configurations. |
-| **/logger** | This module centralizes the configuration of a common logger to use throughout the application. |
+| **/db** | This module contains all database's communication, queries and configurations. |
+| **/logger** | This module centralizes the a common logger to use throughout the application. |
 | **/log** | This folder is by default the logger output. It's where you should expect logs. |
 
 # Endpoints
@@ -243,21 +243,21 @@ Response example:
 ```
 
 # Project Decisions
-During the development process I had some challenges and decisions to make. e.g. whether using one library or not, how handle the configuration, how handle the schema validations, etc. I'll try to summarize some of them in this section.
+During the development process I had some challenges and decisions to make. e.g. whether to one library or not, how handle the configuration, how handle the schema validations, etc. I'll try to summarize some of them in this section.
 
 #### Testing Library
-One of them was which testing library use, I've opted for using [jest][jest-url] instead of the well known [mocha][mocha-url] cause [jest][jest-url] has everything built into it - from matchers to mocks.
+One of them was which testing library use, I've opted to use [jest][jest-url] rather than the well known [mocha][mocha-url] cause [jest][jest-url] has everything built into it - from matchers to mocks.
 
 #### Database and ORM/ODM
-Another decision that I had to make was whether use an ORM/ODM or not, and also, whether using a relational database or non relational database. For that, I've put into account that an address book api wouldn't need so much concern with data integrity nor atomicity, an eventual consistency wouldn't be a problem, so, that was one of the reasons that made me opt for using [mongodb][mongodb-url]. 
+Another decision that I had to make was whether I should use an ORM/ODM or not, and also, whether I should use a relational database or a non relational database. For that, I've put into account that an address book api wouldn't need so much concern about data integrity nor atomicity, an eventual consistency wouldn't be a problem, so, that was one of the reasons that made me opt for using [mongodb][mongodb-url]. 
 
-After I decided to use [mongodb][mongodb-url], I considered to use some ODM, such as [mongoose][mongoose-url], after all, they have some features to facilitate development, for instance, the schema validation, pre register hooks etc. But I decided that It wouldn't be good to rely the schema validations onto some specifc database library, It wouldn't work for other schemas that are not being stored in mongodb, for example, the contact model that in our case it is stored in [firebase][firebase-url]. So, I opted to use the [native mongo driver][native-mongodb-driver-url] in this case.
+After I decided to use [mongodb][mongodb-url], I considered to use some ODM, such as [mongoose][mongoose-url], after all, they have some features to facilitate development, for instance, the schema validation, pre register hooks etc. But I concluded that It wouldn't be good for this project to rely the schema validation into some specifc database library, cause we have some other schemas that are being stored in different databases, for instance, the `contact` model that in our case is stored in [firebase][firebase-url] rather than in mongo. So, I've opted to use the [native mongo driver][native-mongodb-driver-url] to connect to the database and find some library later for schema validation.
 
 #### Schema Validation
-As described in the previous section, [Database and ORM/ODM](#database-and-ormodm), I've decided to use a custom library for schema validations rather than using some ODM. For that, I decided to use [Joi][joi-url], in this case, my decision was more for its popularity and documentation rather than anything else.
+As described in the previous section, [Database and ORM/ODM](#database-and-ormodm), I've decided to use a custom library for schema validation rather than using some ODM built in validation. For that, I decided to use [Joi][joi-url], in this case, my decision was more related to its popularity and documentation rather than any specific feature.
 
 #### Logging
-Initially, I've used [debug][debug-url] library, it is intended to be used only in development environment, and it's not really a logging library, it lacks of some features such as saving do file, logging level, etc. So, after a while, I've changed it to [winston][winston-url] for its popularity in the community and features for multiples logging transportation and so forth.
+Initially, I've used [debug][debug-url] library, it is intended to be used only in development environment, and it's not really a logging library, it lacks of some features such as saving do file, logging level, etc. So, after a while, I've changed it to [winston][winston-url] for its popularity in the community and some features such as multiple logging transportation and so forth.
 
 #### Configuration
 It isn't so good to manage all configuration settings throughout the code using environment variables, as described in [eslint-no-process-env][eslint-no-process-env-url] it could lead to maintenance issues as it’s another kind of global dependency. I could solve that by creating a module to centralize all env variables, but I decided to do some googling to find a good library to do that. I've found [dotenv][dotenv-url] and [node-config][node-config-url], I decided to use the second one since it allows to define some sort of hierarchical configuration and default values.
@@ -266,7 +266,7 @@ It isn't so good to manage all configuration settings throughout the code using 
 The [PATCH Method for HTTP][patch-method-rfc] rfc doesn't describe exactly the payload data that should be sent to apply partial changes, it describes only that the payload should be a description of changes. So, I had to decide between using [JSON Patch][json-patch-rfc] notation and [JSON Merge Patch][json-merge-patch-rfc], for the sake of simplicity, I decided to use the second one, which in simple words, allows you to use the same resource schema by just omitting the properties that won't change and declaring only the properties that is intended to modify.
 
 #### Error Handling
-I felt the necessity to standardize my error messages and error handling, so, I found a good library [Boom HTTP-friendly error objects][boom-url] which helps a lot to maintain the same pattern all over the thrown errors. Alongside with that, I decided to create a "global uncaught error handler" which is the errorHandler middleware.
+I felt the necessity to standardize the error messages and error handling, so, I found a good library [Boom HTTP-friendly error objects][boom-url] which helps a lot to maintain the same pattern all over the thrown errors. Alongside with that, I decided to create a "global uncaught error handler" which is the errorHandler middleware.
 
 #### Authentication
 For this case, I had to use some stateless strategy, so I've opted to use [jwt][jwt-rfc-url], and I find unnecessary to use some 3rd party library to authenticate the users, for that I've made myself a middleware that verifies the authorization token header.
