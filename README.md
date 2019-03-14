@@ -101,7 +101,7 @@ docker-compose up
 
 ### Principles
 
-I tried as much as possible to separate responsibilities on each module/layer. For instance, I assumed that only the `models` layer should know how to manage, change, customize and validate a given schema object and it should only delegate a data to `db` layer after it is valid. The `db` layer, on the other hand, should be concerned only in knowing how to communicate with the database and also obey the "implicit" contract of returning an `id` property inside the saved object and last but not least, the `middleware` and `routes` layers should avoid to import and use `db` layer directly, as it doesn't do any sort of validation, these layers should rely on `models` module instead.
+I tried as much as possible to separate responsibilities on each module/layer. For instance, I assumed that only the `models` layer should know how to manage, change, customize and validate a given schema object and it should only send a data to `db` layer after it is valid. The `db` layer, on the other hand, should be concerned only in knowing how to communicate with the database and also in obeying the "implicit" contract of returning an `id` property inside the saved object. Last but not least, the `middleware` and `routes` layers should avoid to import and use `db` layer directly, as it doesn't do any sort of validation, these layers should rely on `models` module instead.
 
 
 ### Components
