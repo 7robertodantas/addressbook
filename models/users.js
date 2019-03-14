@@ -73,6 +73,12 @@ const parseSchema = (user, additionalRequired = []) => {
  */
 const saveUser = async user => {
   log.debug('validating user to save', user)
+
+  const exists = await users.existsEmail(user.email)
+  if (exists) {
+    throw Boom.conflict('User with the given email already exists', { email: user.email })
+  }
+
   const validatedUser = parseSchema(user, ['password'])
   const hash = await hashPassword(validatedUser.password)
   const sanitazedUser = sanitazeUser(validatedUser)

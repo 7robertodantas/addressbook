@@ -1,7 +1,6 @@
 'use strict'
 
 const R = require('ramda')
-const Boom = require('boom')
 const log = require('../logger')
 const mongo = require('./mongodb')
 
@@ -42,12 +41,6 @@ const existsEmail = async email => {
  */
 const save = async user => {
   log.debug('saving user in database', user)
-
-  const exists = await existsEmail(user.email)
-  if (exists) {
-    throw Boom.conflict('User with the given email already exists', { email: user.email })
-  }
-
   const db = await mongo.get()
   const result = await db.collection('users').insertOne(user)
   return R.merge({ id: result.insertedId.toHexString() }, user)
@@ -126,6 +119,7 @@ module.exports = {
   save,
   find,
   findByEmail,
+  existsEmail,
   update,
   exists,
   delete: remove,

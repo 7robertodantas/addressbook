@@ -26,13 +26,6 @@ describe('users db', () => {
   })
 
   describe('save', () => {
-    it('should throw conflict if email already exists', async () => {
-      collection.countDocuments.mockReturnValueOnce(1)
-      const user = {
-        email: 'user@email.com',
-      }
-      await expect(users.save(user)).rejects.toThrow(/email already exists/u)
-    })
     it('should save and return sanitazed _id in the returned user', async () => {
       collection.insertOne.mockImplementationOnce(() => ({ insertedId: generateId(10) }))
       const user = {

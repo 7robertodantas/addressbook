@@ -17,7 +17,7 @@ RUN apk --no-cache --virtual build-dependencies add \
     && npm ci --only=production \
     && apk del build-dependencies
 
-# Copy all content of the current folder that is not in dockerignore.
+# Copy all content of the current folder except those that are in .dockerignore
 COPY . .
 
 # Expose

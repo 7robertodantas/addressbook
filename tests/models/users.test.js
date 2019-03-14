@@ -111,6 +111,13 @@ describe('users models', () => {
           .toThrow(/Invalid/u)
       }))
     })
+    it('should throw conflict if email already exists', async () => {
+      usersDb.existsEmail.mockReturnValueOnce(1)
+      const user = {
+        email: 'user@email.com',
+      }
+      await expect(users.saveUser(user)).rejects.toThrow(/email already exists/u)
+    })
   })
   describe('replaceUser', () => {
     it('should save with hashPassword and return sanitazed user', async () => {
