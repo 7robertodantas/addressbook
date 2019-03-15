@@ -120,7 +120,7 @@ I tried as much as possible to separate responsibilities on each module/layer. F
 
 # Endpoints
 
-The following endpoints are here just for a brief overview. There is an api documentation built following the [OpenAPI Specification][open-api-url] in [*docs/documentation.html*](docs/documentation.html), it's a zero-dependency HTML file that specifies every route and every possible response sample and status.
+The following endpoints are here just for a brief overview. There is an api documentation built following the [OpenAPI Specification][open-api-url] in [*docs/*](docs/) folder. The [*docs/documentation.html*](http://htmlpreview.github.io/?https://raw.githubusercontent.com/7robertodantas/addressbook/master/docs/documentation.html) is a zero-dependency HTML file that specifies every route and every possible response sample and status.
 
 ## Login and Registration
 #### POST /register
