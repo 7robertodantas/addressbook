@@ -87,13 +87,12 @@ docker-compose up
 - [Architecture](#architecture)
   - [Principles](#principles)
   - [Components](#components)
-  - [Logging](#logging)
 - [Endpoints](#endpoints)
   - [Login and Registration](#login-and-registration)
   - [Users](#users)
   - [Contacts](#contacts)
 - [Project Decisions](#project-decisions)
-- [Further Implementation](#further-implementation)
+- [Further Improvements](#further-improvements)
 
 # Architecture
 <p align="center">
