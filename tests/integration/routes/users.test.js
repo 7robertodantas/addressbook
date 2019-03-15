@@ -8,7 +8,7 @@ describe('users routes', () => {
   let user
   let token
 
-  beforeEach(async done => {
+  beforeEach(async () => {
     user = {
       name: 'Test User Routes',
       email: `testuserroutes${Math.random() * Number.MAX_SAFE_INTEGER}@email.com`,
@@ -26,7 +26,6 @@ describe('users routes', () => {
 
     user = userResponse.body
     token = loginResponse.header.authorization
-    done()
   })
 
   describe('PUT /users/:userId', () => {

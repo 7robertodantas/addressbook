@@ -3,6 +3,7 @@
 const express = require('express')
 const auth = require('../models/auth')
 const users = require('../models/users')
+const authentication = require('../middleware/authenticateHandler')
 const { wrap } = require('./utils')
 
 const router = new express.Router()
@@ -32,5 +33,12 @@ router.post('/register', wrap(async (req, res) => {
     .status(201)
     .send(user)
 }))
+
+/**
+ * Return the current token info
+ */
+router.get('/tokeninfo', authentication, (req, res) => {
+  res.status(200).send(req.user)
+})
 
 module.exports = router

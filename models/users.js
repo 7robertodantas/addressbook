@@ -141,6 +141,11 @@ const findUser = async id => {
  */
 const replaceUser = async (id, user) => {
   log.debug(`replacing userId ${id} content`, user)
+
+  // This validation must be removed from here
+  // and be transformed in a database constraint.
+  // It could generate race conditions in case
+  // of multiples requests simultaneously.
   const exists = await users.exists(id)
   if (!exists) {
     throw Boom.notFound('User was not found', { id })
