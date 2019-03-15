@@ -1,0 +1,575 @@
+openapi: 3.0.2
+info:
+  title: Address Book
+  description: A simple but reliable and well structured address book backend api. It allows users to manage their personal info and store as many contacts as they want :)
+  contact:
+    email: 7robertodantas@gmail.com
+    url: https://github.com/7robertodantas/addressbook
+  version: 1.0.0
+servers:
+- url: https://strv-addressbook-dantas-robert.herokuapp.com
+  description: Heroku
+tags:
+- name: Auth
+  description: Authentication routes
+- name: Users
+  description: Users management routes
+- name: Contacts
+  description: Contacts management routes
+paths:
+  /login:
+    post:
+      tags:
+      - Auth
+      summary: Generates an access token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+            example:
+              email: john@email.com
+              password: johnpassword
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+              example:
+                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWM4YWU4NTBmZmQxZTkxMWQ5MDIwOGFkIiwiZW1haWwiOiJqb2huQGVtYWlsLmNvbSJ9LCJpYXQiOjE1NTI2MDg3NjcsImV4cCI6MTU1MjYxMjM2NywiaXNzIjoiYWRkcmVzc2Jvb2stYXBpIn0.Y_AYRmuC1L5E0iTAURADmClSOiuPJ_yLD-KL9IdzBPE
+                tokenType: bearer
+        400:
+          description: Missing required attributes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 400
+                error: Bad Request
+                message: Invalid Request. "email" is required
+        403:
+          description: Wrong password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: Wrong Password
+                data:
+                  email: john@email.com
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 404
+                error: Not Found
+                message: User not found
+                data:
+                  email: john@email.com
+        500:
+          description: Mongodb connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 500
+                error: Internal Server Error
+                message: An internal server error occurred
+                details: Could not connect to mongodb
+  /register:
+    post:
+      tags:
+      - Auth
+      summary: Register a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              name: John Peter
+              email: john@email.com
+              password: johnpassword
+      responses:
+        201:
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+              example:
+                id: 5c8ae850ffd1e911d90208ad
+                email: john@email.com
+        400:
+          description: Missing required attributes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 400
+                error: Bad Request
+                message: Invalid Request. "email" is required
+        409:
+          description: Conflict email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 409
+                error: Conflict
+                message: User with the given email already exists
+                data:
+                  email: john@email.com
+        500:
+          description: Mongodb connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 500
+                error: Internal Server Error
+                message: An internal server error occurred
+                details: Could not connect to mongodb
+  /tokeninfo:
+    get:
+      tags:
+      - Auth
+      summary: Get token info
+      responses:
+        200:
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+              example:
+                id: 5c8ae850ffd1e911d90208ad
+                email: john@email.com
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: invalid signature
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: User does not have permission to access the given resource.
+      security:
+      - JWT: []
+  /users/{userId}:
+    get:
+      tags:
+      - Users
+      summary: Get the user details
+      parameters:
+      - name: userId
+        in: path
+        description: the user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+              example:
+                id: 5c8ae850ffd1e911d90208ad
+                email: john@email.com
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: invalid signature
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: User does not have permission to access the given resource.
+        500:
+          description: Mongodb connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 500
+                error: Internal Server Error
+                message: An internal server error occurred
+                details: Could not connect to mongodb
+      security:
+      - JWT: []
+    put:
+      tags:
+      - Users
+      summary: Replace user details
+      parameters:
+      - name: userId
+        in: path
+        description: the user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              name: John M Peter
+              email: john.m.peter@email.com
+              password: newpassword
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+              example:
+                id: 5c8ae850ffd1e911d90208ad
+                name: John M Peter
+                email: john.m.peter@gmail.com
+        400:
+          description: Missing required attributes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 400
+                error: Bad Request
+                message: Invalid Request. "email" is required
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: invalid signature
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: User does not have permission to access the given resource.
+        500:
+          description: Mongodb connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 500
+                error: Internal Server Error
+                message: An internal server error occurred
+                details: Could not connect to mongodb
+      security:
+      - JWT: []
+    delete:
+      tags:
+      - Users
+      summary: Delete user
+      parameters:
+      - name: userId
+        in: path
+        description: the user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+              example:
+                id: 5c8ae850ffd1e911d90208ad
+                name: John M Peter
+                email: johnedit@email.com
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: invalid signature
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: User does not have permission to access the given resource.
+        500:
+          description: Mongodb connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 500
+                error: Internal Server Error
+                message: An internal server error occurred
+                details: Could not connect to mongodb
+      security:
+      - JWT: []
+    patch:
+      tags:
+      - Users
+      summary: Partial update user details
+      parameters:
+      - name: userId
+        in: path
+        description: the user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              email: johnedit@email.com
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+              example:
+                id: 5c8ae850ffd1e911d90208ad
+                name: John M Peter
+                email: johnedit@email.com
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: invalid signature
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: User does not have permission to access the given resource.
+        500:
+          description: Mongodb connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 500
+                error: Internal Server Error
+                message: An internal server error occurred
+                details: Could not connect to mongodb
+      security:
+      - JWT: []
+  /users/{userId}/contacts:
+    post:
+      tags:
+      - Contacts
+      summary: Create a new contact
+      parameters:
+      - name: userId
+        in: path
+        description: the user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+            example:
+              name: Marie Curie
+              email: mariacurie@gmail.com
+              address:
+                street: Rokitnicka, Warszawa, Poland
+                zipCode: 05-077
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: -L_ynDpucmlBLP8g3znb
+                name: Marie Curie
+                email: mariacurie@gmail.com
+                address:
+                  street: Rokitnicka, Warszawa, Poland
+                  zipCode: 05-077
+        400:
+          description: Missing required attributes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 400
+                error: Bad Request
+                message: Invalid Request. "email" is required
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: User does not have permission to access the given resource.
+        500:
+          description: Mongodb connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                statusCode: 500
+                error: Internal Server Error
+                message: An internal server error occurred
+                details: Could not connect to mongodb
+      security:
+      - JWT: []
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    UserDetails:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          email:
+            type: string
+    Contact:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        address:
+          $ref: '#/components/schemas/ContactAddress'
+    Credentials:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    Token:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: string
+        data:
+          type: object
+    ContactAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        zipCode:
+          type: string
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
