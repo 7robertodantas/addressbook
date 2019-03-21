@@ -2,7 +2,6 @@
 
 const request = require('supertest')
 const app = require('../../../app')
-const log = require('../../../logger')
 
 describe('users routes', () => {
   const agent = request.agent(app)

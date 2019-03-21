@@ -39,7 +39,7 @@ A simple but reliable and well structured address book backend api. It allows us
 
 ### Testing
 
-To run the tests it is pretty straightforward, you can run it without doing any configuration. It's already configured and it will start by default an embedded [in memory mongodb server][mongodb-memory-server-url] and an [embedded firebase server][firebase-server-url] as well. You should be able to run the tests by executing the following command (Just make sure you have [npm][npm-url] globally installed and that you've installed the dependencies. Note: some libraries may need to have python installed):
+To run the tests it is pretty straightforward, It's already configured and it will start by default an embedded [in memory mongodb server][mongodb-memory-server-url] and an [embedded firebase server][firebase-server-url] as well. You should be able to run the tests by executing the following command (Just make sure you have [npm][npm-url] globally installed and that you've installed the dependencies. Note: some libraries may need to have python installed):
 
 ```
 npm install
@@ -71,7 +71,7 @@ MONGODB_URI=mongodb://localhost:27017/addressbook npm start
 For more details on how the config library works, please check the [node-config][node-config-url] documentation.
 
 #### Dockerfile and Docker Compose
-I've prepared a [Dockerfile][dockerfile-url] and a [docker-compose][docker-compose-url] file that should run without doing any configuration, unless if you have another container or service running in the same port: `3000` as I defined in the `app` service. If so, I suggest you to change the docker-compose port mapping in the `app` service before running it. Assuming that you have [docker][docker-install-url] and [docker-compose][docker-compose-install-url] installed in your machine, run the command below:
+I've prepared a [Dockerfile][dockerfile-url] and a [docker-compose][docker-compose-url] file that should run without the need for any further configuration, unless if you have another container or service running in the same port: `3000` as I defined in the `app` service. If so, I suggest you to change the docker-compose port mapping in the `app` service before running it. Assuming that you have [docker][docker-install-url] and [docker-compose][docker-compose-install-url] installed in your machine, run the command below:
 
 ```
 docker-compose build
@@ -227,7 +227,7 @@ Response sample:
 The following endpoint requires an `Authorization` header with the `Bearer <token>` obtained from `/login`.
 
 #### POST /users/:userId/contacts
-Request example:
+Request sample:
 ```
 {
     "name": "A contact name",
@@ -239,7 +239,7 @@ Request example:
 }
 ```
 
-Response example:
+Response sample:
 ```
 {
     "id": "-L_tz2-qfEMaHUeM9NsG",
