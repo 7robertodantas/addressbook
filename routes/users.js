@@ -2,6 +2,7 @@
 
 const express = require('express')
 const config = require('config')
+const authenticate = require('../middleware/authenticateHandler')
 const resourceOwner = require('../middleware/resourceOwnerHandler')
 const users = require('../models/users')
 const contacts = require('../models/contacts')
@@ -15,7 +16,7 @@ const router = new express.Router()
  * that an authenticated user should not have access to another
  * other user's data.
  */
-router.param('userId', resourceOwner)
+router.param('userId', authenticate, resourceOwner)
 
 /**
  * Fetch the user info.

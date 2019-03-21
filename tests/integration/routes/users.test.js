@@ -2,6 +2,7 @@
 
 const request = require('supertest')
 const app = require('../../../app')
+const log = require('../../../logger')
 
 describe('users routes', () => {
   const agent = request.agent(app)
@@ -40,6 +41,12 @@ describe('users routes', () => {
         })
         .expect(200)
     })
+    it('should require authentication', async () => {
+      await agent
+        .put(`/users/${user.id}`)
+        .send()
+        .expect(401)
+    })
   })
   describe('PATCH /users/:id', () => {
     it('should be able to patch user info', async () => {
@@ -53,6 +60,12 @@ describe('users routes', () => {
         })
         .expect(200)
     })
+    it('should require authentication', async () => {
+      await agent
+        .patch(`/users/${user.id}`)
+        .send()
+        .expect(401)
+    })
   })
   describe('DELETE /users/:userId', () => {
     it('should be able to delete user', async () => {
@@ -61,6 +74,12 @@ describe('users routes', () => {
         .set('Authorization', token)
         .send()
         .expect(200)
+    })
+    it('should require authentication', async () => {
+      await agent
+        .delete(`/users/${user.id}`)
+        .send()
+        .expect(401)
     })
   })
   describe('POST /users/:userId/contacts', () => {
@@ -73,6 +92,12 @@ describe('users routes', () => {
           email: 'contact@gmail.com',
         })
         .expect(201)
+    })
+    it('should require authentication', async () => {
+      await agent
+        .post(`/users/${user.id}/contacts`)
+        .send()
+        .expect(401)
     })
   })
 })

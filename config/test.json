@@ -28,12 +28,14 @@
   },
   "logger": {
     "file": {
-      "enabled": false,
-      "level": "debug"
+      "enabled": true,
+      "filename": "./log/test.log",
+      "level": "info"
     },
     "console": {
-      "enabled": true,
-      "level": "info"
+      "enabled": false,
+      "level": "info",
+      "silent": true
     }
   },
   "test" : {

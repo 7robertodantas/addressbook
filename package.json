@@ -24,8 +24,9 @@
   "jest": {
     "globalSetup": "<rootDir>/tests/integration/setup.js",
     "globalTeardown": "<rootDir>/tests/integration/teardown.js",
-    "coverageDirectory": "./coverage/",
-    "collectCoverage": true
+    "coverageDirectory": "<rootDir>/coverage/",
+    "collectCoverage": true,
+    "coverageReporters": ["json", "lcov", "html", "clover"]
   },
   "dependencies": {
     "bcrypt": "^3.0.4",

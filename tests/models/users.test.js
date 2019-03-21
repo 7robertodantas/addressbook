@@ -116,7 +116,9 @@ describe('users models', () => {
       const user = {
         email: 'user@email.com',
       }
-      await expect(users.saveUser(user)).rejects.toThrow(/email already exists/u)
+      await expect(users.saveUser(user))
+        .rejects
+        .toThrow(/email already exists/u)
     })
   })
   describe('replaceUser', () => {

@@ -21,7 +21,7 @@ describe('auth models', () => {
     const token = await auth.sign('user@email.com', 'password')
     expect(token).toBeDefined()
 
-    const user = auth.verify(token)
+    const user = await auth.verify(token)
     expect(user).toBeDefined()
     expect(user).toMatchObject(mockUser)
   })
@@ -31,8 +31,10 @@ describe('auth models', () => {
       .rejects
       .toThrow(/not found/u)
   })
-  it('should give error when token is invalid', () => {
-    expect(() => auth.verify('f3ce6b8b-c8c8-4e1e-84fc-b77b05ab3233')).toThrow(/malformed/u)
+  it('should give error when token is invalid', async () => {
+    await expect(auth.verify('f3ce6b8b-c8c8-4e1e-84fc-b77b05ab3233'))
+      .rejects
+      .toThrow(/malformed/u)
   })
   it('should give error when token is expired', async () => {
     const mockUser = {
@@ -42,7 +44,9 @@ describe('auth models', () => {
     }
 
     const token = await jwt.sign({ user: mockUser }, secret, { ...options.sign, expiresIn: '-1h' })
-    expect(() => auth.verify(token)).toThrow(/expired/u)
+    await expect(auth.verify(token))
+      .rejects
+      .toThrow(/expired/u)
   })
   it('should give error when token issuer does not match', async () => {
     const mockUser = {
@@ -51,7 +55,9 @@ describe('auth models', () => {
       email: 'user@email.com',
     }
     const token = await jwt.sign({ user: mockUser }, secret, { ...options.sign, issuer: 'random' })
-    expect(() => auth.verify(token)).toThrow(/issuer invalid/u)
+    await expect(auth.verify(token))
+      .rejects
+      .toThrow(/issuer invalid/u)
   })
   it('should give error when token secret does not match', async () => {
     const mockUser = {
@@ -60,6 +66,8 @@ describe('auth models', () => {
       email: 'user@email.com',
     }
     const token = await jwt.sign({ user: mockUser }, 'random-secret', { ...options.sign })
-    expect(() => auth.verify(token)).toThrow(/invalid signature/u)
+    await expect(auth.verify(token))
+      .rejects
+      .toThrow(/invalid signature/u)
   })
 })

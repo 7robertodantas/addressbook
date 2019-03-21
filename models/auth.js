@@ -24,11 +24,14 @@ const sign = async (email, password) => {
     throw Boom.notFound('User with the given email and password was not found.', { email })
   }
 
-  try {
-    return jwt.sign({ user }, secret, options.sign)
-  } catch (ex) {
-    throw Boom.boomify(ex, { statusCode: 500 })
-  }
+  return new Promise((resolve, reject) => {
+    jwt.sign({ user }, secret, options.sign, (err, encoded) => {
+      if (err) {
+        return reject(Boom.boomify(err, { statusCode: 500 }))
+      }
+      return resolve(encoded)
+    })
+  })
 }
 
 /**
@@ -40,12 +43,15 @@ const sign = async (email, password) => {
  */
 const verify = token => {
   log.debug(`verifying token ${token}`)
-  try {
-    const { user } = jwt.verify(token, secret, options.verify)
-    return user
-  } catch (ex) {
-    throw Boom.boomify(ex, { statusCode: 401 })
-  }
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, secret, options.verify, (err, decoded) => {
+      if (err) {
+        return reject(Boom.boomify(err, { statusCode: 401 }))
+      }
+      const { user } = decoded
+      return resolve(user)
+    })
+  })
 }
 
 module.exports = {

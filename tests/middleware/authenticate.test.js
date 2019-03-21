@@ -7,7 +7,7 @@ const auth = require('../../models/auth')
 jest.mock('../../models/auth')
 
 describe('authenticate middleware', () => {
-  it('should require authorization header', () => {
+  it('should require authorization header', async () => {
     const sendMock = jest.fn()
     const statusMock = jest.fn(() => ({ send: sendMock }))
     const req = {
@@ -17,10 +17,16 @@ describe('authenticate middleware', () => {
       status: statusMock,
     }
     const next = jest.fn()
-    expect(() => authenticate(req, res, next)).toThrow(/required/u)
-    expect(next).not.toHaveBeenCalled()
+    await authenticate(req, res, next)
+    const error = next.mock.calls[0][0]
+    expect(Boom.isBoom(error)).toBeTruthy()
+    expect(error.output.payload).toMatchObject({
+      error: 'Unauthorized',
+      message: expect.stringMatching(/required/u),
+      statusCode: 401,
+    })
   })
-  it('should require bearer authorization scheme', () => {
+  it('should require bearer authorization scheme', async () => {
     const sendMock = jest.fn()
     const statusMock = jest.fn(() => ({ send: sendMock }))
     const req = {
@@ -32,10 +38,16 @@ describe('authenticate middleware', () => {
       status: statusMock,
     }
     const next = jest.fn()
-    expect(() => authenticate(req, res, next)).toThrow(/not supported/u)
-    expect(next).not.toHaveBeenCalled()
+    await authenticate(req, res, next)
+    const error = next.mock.calls[0][0]
+    expect(Boom.isBoom(error)).toBeTruthy()
+    expect(error.output.payload).toMatchObject({
+      error: 'Unauthorized',
+      message: expect.stringMatching(/not supported/u),
+      statusCode: 401,
+    })
   })
-  it('should give error if auth verify returns empty', () => {
+  it('should give error if auth verify returns empty', async () => {
     const sendMock = jest.fn()
     const statusMock = jest.fn(() => ({ send: sendMock }))
     const req = {
@@ -50,10 +62,16 @@ describe('authenticate middleware', () => {
     auth.verify.mockImplementation(() => {
       throw Boom.unauthorized('invalid token')
     })
-    expect(() => authenticate(req, res, next)).toThrow(/invalid token/u)
-    expect(next).not.toHaveBeenCalled()
+    await authenticate(req, res, next)
+    const error = next.mock.calls[0][0]
+    expect(Boom.isBoom(error)).toBeTruthy()
+    expect(error.output.payload).toMatchObject({
+      error: 'Unauthorized',
+      message: expect.stringMatching(/invalid token/u),
+      statusCode: 401,
+    })
   })
-  it('should add authenticated user in request if token is valid', () => {
+  it('should add authenticated user in request if token is valid', async () => {
     const sendMock = jest.fn()
     const statusMock = jest.fn(() => ({ send: sendMock }))
     const req = {
@@ -71,7 +89,7 @@ describe('authenticate middleware', () => {
     }
     const next = jest.fn()
     auth.verify.mockImplementation(() => user)
-    authenticate(req, res, next)
+    await authenticate(req, res, next)
     expect(statusMock).not.toHaveBeenCalledWith()
     expect(sendMock).not.toHaveBeenCalled()
     expect(req.user).toBe(user)

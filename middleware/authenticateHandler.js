@@ -3,6 +3,7 @@
 const Boom = require('boom')
 const log = require('../logger')
 const auth = require('../models/auth')
+const { wrap } = require('../routes/utils')
 
 /**
  * Verifies if the current request has 'Authorization'
@@ -16,9 +17,8 @@ const auth = require('../models/auth')
  * token does not match.
  * @returns {*} next().
  */
-const authenticate = (req, res, next) => {
+const authenticate = wrap(async (req, res, next) => {
   log.debug('validating request token')
-
   const token = req.headers.authorization
   if (!token) {
     throw Boom.unauthorized('Authorization header is required.')
@@ -26,13 +26,13 @@ const authenticate = (req, res, next) => {
 
   if (!token.startsWith('Bearer ')) {
     throw Boom.unauthorized('Authorization header scheme is missing or the given scheme \
-     is not supported. Only Bearer scheme is supported.')
+    is not supported. Only Bearer scheme is supported.')
   }
 
   const jwt = token.replace('Bearer ', '')
-  const user = auth.verify(jwt)
+  const user = await auth.verify(jwt)
   req.user = user
   return next()
-}
+})
 
 module.exports = authenticate
