@@ -31,7 +31,7 @@
   "dependencies": {
     "bcrypt": "^3.0.4",
     "boom": "^7.3.0",
-    "config": "^3.0.1",
+    "config": "^3.3.8",
     "express": "^4.16.4",
     "firebase": "^5.8.6",
     "joi": "^14.3.1",
